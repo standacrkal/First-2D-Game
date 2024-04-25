@@ -33,9 +33,12 @@ public class Menu implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (page == 1 || page == 4) {
+        if (page == 1) {
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 page = 2;
+            }
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                System.exit(0);
             }
 
             if (e.getKeyCode() == KeyEvent.VK_P) {
@@ -49,9 +52,10 @@ public class Menu implements KeyListener {
             }
         }
 
-        if (page == 1){
-            if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
-                System.exit(0);
+
+        if( page == 4){
+            if (e.getKeyCode() == KeyEvent.VK_ENTER){
+                page = 2;
             }
         }
 

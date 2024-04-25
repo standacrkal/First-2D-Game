@@ -13,17 +13,43 @@ public class Player extends Entity implements KeyListener {
     private boolean up;
     private boolean canMove;
     private Health[] health;
-    private GameLogic logic;
 
 
-    public Player(int x, int y, int width, int height, String file, GameLogic logic) {
+
+    public Player(int x, int y, int width, int height, String file) {
         super(x, y, width, height, file);
         this.canMove = true;
-        this.logic = logic;
         this.health = new Health[3];
-        this.health[0] = new Health(30, 20, 40, 40, "srdce.png",logic);
-        this.health[1] = new Health(70, 20, 40, 40, "srdce.png",logic);
-        this.health[2] = new Health(110, 20, 40, 40, "srdce.png",logic);
+        this.health[0] = new Health(30, 20, 40, 40, "srdce.png");
+        this.health[1] = new Health(70, 20, 40, 40, "srdce.png");
+        this.health[2] = new Health(110, 20, 40, 40, "srdce.png");
+    }
+
+    public void damage(){
+        if (getHealth()[2] != null){
+            getHealth()[2] = null;
+        } else if (getHealth()[1] != null) {
+            getHealth()[1] = null;
+        } else if (getHealth()[0] != null) {
+            getHealth()[0] = null;
+        }
+    }
+
+    public void addHealth(){
+        if (getHealth()[2] == null && getHealth()[1]!= null){
+            getHealth()[2] = new Health(110, 20, 40, 40, "srdce.png");
+        } else if (getHealth()[1] == null) {
+            getHealth()[1] = new Health(70, 20, 40, 40, "srdce.png");
+        }
+    }
+
+    public void slowDown(){
+        if (canMove) {
+            setCanMove(false);
+        }
+    }
+    public void moveNormal(){
+        setCanMove(true);
     }
 
     public void move(int speed){

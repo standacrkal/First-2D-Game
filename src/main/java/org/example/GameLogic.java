@@ -19,22 +19,25 @@ import javax.swing.*;
         private Menu menu;
         private Health bubbleHealth;
         private FlowerSpike[] flowerSpikes;
+        private int level;
 
         public void initialize() {
 
             this.random = new Random();
-            this.player = new Player(400, 540, 90, 90, "mikyr.png", this);
-            this.monkey = new Monkey(random.nextInt(50, 850), 90, 90, 90, "opica.png", this);
-            this.spider = new Spider(900, 610, 90, 60, "pavouk.png", this);
+            this.player = new Player(400, 540, 90, 90, "mikyr.png");
+            this.monkey = new Monkey(random.nextInt(50, 850), 90, 90, 90, "opica.png");
+            this.spider = new Spider(900, 610, 90, 60, "pavouk.png");
             this.score = 0;
+            this.level = 1;
             this.menu = new Menu("menu.png");
-            this.bubbleHealth = new Health(random.nextInt(50, 850), - 100, 40, 40, "bubble.png", this);
+            this.bubbleHealth = new Health(random.nextInt(50, 850), - 100, 40, 40, "bubble.png");
 
             this.flowerSpikes = new FlowerSpike[4];
-            this.flowerSpikes[0] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png", this);
-            this.flowerSpikes[1] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png", this);
-            this.flowerSpikes[2] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png", this);
-            this.flowerSpikes[3] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png", this);
+            this.flowerSpikes[0] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
+            this.flowerSpikes[1] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
+            this.flowerSpikes[2] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
+            this.flowerSpikes[3] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
+
 
                 this.timer = new Timer(2000, new ActionListener() { //prvni kokos se spawne zhruba po 2000 sekundach
                     @Override
@@ -72,38 +75,40 @@ import javax.swing.*;
                 for (Coconut coconut: monkey.getCoconuts()) {
                     if (player.checkCollision(new Rectangle(coconut.getCoord().x, coconut.getCoord().y, coconut.getSize().width, coconut.getSize().height))) {
                         if (coconut.getCoord().y <= 530) {
-                            coconut.damagePlayer();
+                            player.damage();
 
                             //jakmile mě zasáhne kokos posunu ho na x mimo mapu, aby vypadalo, že mě zasáhl, jakmile pak dosáhne dane y souradnice bude vymazan z iteratoru
-                            coconut.getCoord().setX(1000);
+                            coconut.destroy();
                         }
 
                     }
                 }
 
+                //pádání bubliny s hp od score vetsi nebo rovno 5
+                if (score >= 5){
+                    bubbleHealth.fallDown(7);
+                }
+
                 //pohyb spidera od score vetsi nebo rovno 15
                 if (score >= 15) {
                     spider.sideMove(6);
+                    level = 2;
                 }
 
                 //kolize s pavoukem a omezení pohybu
                 if (player.checkCollision(new Rectangle(spider.getCoord().x, spider.getCoord().y, spider.getSize().width, spider.getSize().height))) {
-                    spider.slowDownPlayer();
+                    player.slowDown();
                 } else {
-                    player.setCanMove(true);
+                    player.moveNormal();
                 }
 
-                //pádání bubliny s hp od score vetsi nebo rovno 5
-                if (score >= 5){
-                   bubbleHealth.fallDown(7);
-                }
 
                 //kolize mezi hráčem a bublinou se srdíčkem
                 if (player.checkCollision(new Rectangle(bubbleHealth.getCoord().x, bubbleHealth.getCoord().y, bubbleHealth.getSize().width, bubbleHealth.getSize().height))){
-                    bubbleHealth.addHealth();
+                    player.addHealth();
 
                     //posunout bublinu na jiné x, aby při srazce s bublinou vypadalo, že praskla
-                    bubbleHealth.getCoord().setX(1000);
+                    bubbleHealth.destroy();
 
                 }
 
@@ -115,6 +120,7 @@ import javax.swing.*;
 
                 //flowerSpike kolize
                 if (score >= 30) {
+                    level = 3;
                     for (FlowerSpike flowerSpike : flowerSpikes) {
                         flowerSpike.grow(2);
                         flowerSpike.setCollided(false);
@@ -135,11 +141,12 @@ import javax.swing.*;
                         //když se flowerspike dotkne nohou hráče ubere mu hp
                         if (flowerSpike.getCoord().y <= 590){
                             if (player.checkCollision(new Rectangle(flowerSpike.getCoord().x, flowerSpike.getCoord().y, flowerSpike.getSize().width, flowerSpike.getSize().height))){
-                                flowerSpike.doubleDamagePlayer();
+                                player.damage();
                             }
                         }
                     }
                 }
+
 
 
             }
@@ -159,9 +166,9 @@ import javax.swing.*;
         public void resetGame(){
                 player.getCoord().setX(400);
 
-                player.getHealth()[0] = new Health(30, 20, 40, 40, "srdce.png", this);
-                player.getHealth()[1] = new Health(70, 20, 40, 40, "srdce.png", this);
-                player.getHealth()[2] = new Health(110, 20, 40, 40, "srdce.png", this);
+                player.getHealth()[0] = new Health(30, 20, 40, 40, "srdce.png");
+                player.getHealth()[1] = new Health(70, 20, 40, 40, "srdce.png");
+                player.getHealth()[2] = new Health(110, 20, 40, 40, "srdce.png");
 
                 monkey.getCoord().setX(random.nextInt(50, 850));
 
@@ -177,6 +184,8 @@ import javax.swing.*;
 
                 //zde musím nastavit score na -1, protože z nějakého důvodu když zapnu hru tak se mi tam ukáže score 1 když tam mám nastavenou 0 a pak to neodpovida danému počtu vyhnutých kokosů
                 monkey.setScore(-1);
+
+                level = 1;
 
         }
 
@@ -208,6 +217,9 @@ import javax.swing.*;
             return flowerSpikes;
         }
 
+        public int getLevel() {
+            return level;
+        }
     }
 
 

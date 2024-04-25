@@ -1,24 +1,17 @@
 package org.example.logic;
 
 
-
-import org.example.GameLogic;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Monkey extends Entity {
     private ArrayList<Coconut> coconuts;
     private int score;
-    private GameLogic logic;
 
-
-    public Monkey( int x, int y, int width, int height, String file, GameLogic logic) {
+    public Monkey( int x, int y, int width, int height, String file) {
         super(x, y, width, height, file);
         this.coconuts = new ArrayList<>();
         this.score = 0;
-        this.logic = logic;
 
     }
 
@@ -40,7 +33,7 @@ public class Monkey extends Entity {
     }
 
     public void throwCoconut() {
-        Coconut newCoconut = new Coconut(getCoord().x, getCoord().y, 40, 40, "kokos.png", logic );
+        Coconut newCoconut = new Coconut(getCoord().x, getCoord().y, 40, 40, "kokos.png");
 
         // Podmínka, aby kokosy nebyly generovány mimo herní okno
         if (getCoord().x >= 0 && getCoord().x <= 850 ) {

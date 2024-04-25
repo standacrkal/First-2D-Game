@@ -16,7 +16,9 @@ import java.io.IOException;
 public class GameGraphics extends JFrame{
     private GameLogic logic;
     private Draw draw;
-    private BufferedImage image;
+    private BufferedImage image,deadScreen, rules;
+    private Image bg2, bg3;
+    ImageIcon bgGif, bgGif2;
 
     public GameGraphics(GameLogic logic){
         setSize(900, 720);
@@ -28,8 +30,33 @@ public class GameGraphics extends JFrame{
         this.draw = new Draw();
         this.logic = logic;
         add(draw);
+
+        //pozadi lvl3
+        bgGif = new ImageIcon("src/main/resources/bg2.gif");
+        bg3 = bgGif.getImage();
+
+        bgGif2 = new ImageIcon("src/main/resources/level 2.png");
+        bg2 = bgGif2.getImage();
+
+
+        //pozadi lvl1
         try {
             image = ImageIO.read(new File("src/main/resources/bg.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //deadscreen
+        try {
+            deadScreen = ImageIO.read(new File("src/main/resources/gameover.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        //pravidla
+        try {
+            rules = ImageIO.read(new File("src/main/resources/rules.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -49,33 +76,38 @@ public class GameGraphics extends JFrame{
         protected  void paintComponent(Graphics g){
             super.paintComponent(g);
             if (logic.getMenu().getPage() == 1 ){
+
                 g.drawImage(logic.getMenu().getImgMenu(), 0, 0, 900, 720, this);
             }
+
+
             if (logic.getMenu().getPage() == 3){
-                BufferedImage rules;
-                try {
-                    rules = ImageIO.read(new File("src/main/resources/rules.png"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
                 g.drawImage(rules, 0, 0, 900, 700, this);
             }
+
+
             if (logic.getMenu().getPage() == 4){
-                BufferedImage deadScreen;
-                try {
-                    deadScreen = ImageIO.read(new File("src/main/resources/gameover.png"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
                 g.drawImage(deadScreen, 0, 0, 900, 690, this);
             }
+
 
             if (logic.getMenu().getPage() == 2 ) {
                 this.font = new Font("MINECRAFT", Font.BOLD, 25);
 
                 g.setFont(font);
+                if (logic.getLevel() == 1) {
+                    g.drawImage(image, 0, 0, 900, 720, this);
+                }
 
-                g.drawImage(image, 0, 0, this);
+                if (logic.getLevel() == 2){
+                    g.drawImage(bg2, 0, 0, 900, 720, this);
+                }
+
+                if (logic.getLevel() == 3){
+                    g.drawImage(bg3,0, 0,900,720,this);
+                }
                 g.drawImage(logic.getPlayer().getImage(), logic.getPlayer().getCoord().x, logic.getPlayer().getCoord().y, logic.getPlayer().getSize().width, logic.getPlayer().getSize().height, this);
                 g.drawImage(logic.getMonkey().getImage(), logic.getMonkey().getCoord().x, logic.getMonkey().getCoord().y, logic.getMonkey().getSize().width, logic.getMonkey().getSize().height, this);
                 g.drawImage(logic.getBubbleHealth().getImage(), logic.getBubbleHealth().getCoord().x, logic.getBubbleHealth().getCoord().y, logic.getBubbleHealth().getSize().width, logic.getBubbleHealth().getSize().height, this);
@@ -101,6 +133,7 @@ public class GameGraphics extends JFrame{
                 if (logic.getScore() >= 15){
                     g.drawImage(logic.getSpider().getImage(), logic.getSpider().getCoord().x, logic.getSpider().getCoord().y, logic.getSpider().getSize().width, logic.getSpider().getSize().height, this);
                 }
+                g.drawString("Level: " + Integer.toString(logic.getLevel()), 400, 50);
             }
 
         }

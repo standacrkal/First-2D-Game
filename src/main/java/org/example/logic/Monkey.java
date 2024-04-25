@@ -1,72 +1,57 @@
 package org.example.logic;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
 
-public class Monkey {
-    private Coordinates coord;
-    private Size size;
-    private BufferedImage image;
-    private boolean move;
-    private  int speed;
-    private Random random;
 
-    public Monkey( int y, int width, int height, String file) {
-        this.random = new Random();
-        this.coord = new Coordinates( random.nextInt(50, 850 ), y);
-        this.size = new Size(width, height);
-        try {
-            this.image = ImageIO.read(new File(file));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        this.move = true;
-        this.speed = 15;
+import org.example.GameLogic;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class Monkey extends Entity {
+    private ArrayList<Coconut> coconuts;
+    private int score;
+    private GameLogic logic;
+
+
+    public Monkey( int x, int y, int width, int height, String file, GameLogic logic) {
+        super(x, y, width, height, file);
+        this.coconuts = new ArrayList<>();
+        this.score = 0;
+        this.logic = logic;
     }
 
-    public void moveSide(){
-        if (move){
-            if (coord.x < 825){
-                coord.x += speed;
-            }else {
-                move = false;
+    public void updateCoconuts(){
+        Iterator<Coconut> coconutIterator = coconuts.iterator();
+        while (coconutIterator.hasNext()) {
+
+            //kontroluje jestli existuje  dalsi kokos
+            Coconut coconut = coconutIterator.next();
+            coconut.fallDown(25);
+
+            // odstranění kokosuu diky iteratoru
+            if (coconut.getCoord().y >= 700) {
+                score ++;
+                coconutIterator.remove();
             }
-        }
-        else{
-            if (coord.x > 0){
-                coord.x-= speed;
-            }else {
-                move = true;
-            }
+
         }
     }
 
+    public void throwCoconut() {
+        Coconut newCoconut = new Coconut(getCoord().x, getCoord().y, 40, 40, "kokos.png", logic );
 
-    public int getX() {
-        return coord.x;
+        // Podmínka, aby kokosy nebyly generovány mimo herní okno
+        if (getCoord().x >= 0 && getCoord().x <= 850 ) {
+            coconuts.add(newCoconut);
+        }
+
     }
 
-    public int getY() {
-        return coord.y;
+    public int getScore() {
+        return score;
     }
 
-    public int getWidth() {
-        return size.width;
-    }
-
-    public int getHeight() {
-        return size.height;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
-    public BufferedImage getImage() {
-        return image;
+    public ArrayList<Coconut> getCoconuts() {
+        return coconuts;
     }
 }

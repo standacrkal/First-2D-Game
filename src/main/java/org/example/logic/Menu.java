@@ -1,7 +1,5 @@
 package org.example.logic;
 
-import org.example.GameLogic;
-
 import javax.imageio.ImageIO;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -15,7 +13,7 @@ public class Menu implements KeyListener {
 
     public Menu(String file) {
         try {
-            this.imgMenu = ImageIO.read(new File(file));
+            this.imgMenu = ImageIO.read(new File("src/main/resources/" + file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -35,16 +33,34 @@ public class Menu implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE){
-            page = 2;
-        }
-        if (e.getKeyCode() == KeyEvent.VK_P){
-            page = 3;
+        if (page == 1) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                page = 2;
+            }
+
+            if (e.getKeyCode() == KeyEvent.VK_P) {
+                page = 3;
+            }
         }
 
-            if (e.getKeyCode() == KeyEvent.VK_J) {
+        if (page == 3) {
+            if (e.getKeyCode() == KeyEvent.VK_R) {
                 page = 1;
             }
+        }
+        if (page == 4){
+            if (e.getKeyCode() == KeyEvent.VK_ENTER){
+                page = 5;
+                System.out.println(page);
+            }
+            if (e.getKeyCode() == KeyEvent.VK_R){
+                page = 1;
+                System.out.println(page);
+
+            }
+        }
+
+
 
 
     }
@@ -54,7 +70,12 @@ public class Menu implements KeyListener {
 
     }
 
+
     public int getPage() {
         return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }

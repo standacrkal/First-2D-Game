@@ -29,7 +29,7 @@ public class GameGraphics extends JFrame{
         this.logic = logic;
         add(draw);
         try {
-            image = ImageIO.read(new File("bg.png"));
+            image = ImageIO.read(new File("src/main/resources/bg.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -47,47 +47,56 @@ public class GameGraphics extends JFrame{
         private Font font;
         @Override
         protected  void paintComponent(Graphics g){
-            if (logic.getGameActive() == 1 ){
+            super.paintComponent(g);
+            if (logic.getMenu().getPage() == 1 ){
                 g.drawImage(logic.getMenu().getImgMenu(), 0, 0, 900, 720, this);
             }
-            if (logic.getGameActive() == 3){
+            if (logic.getMenu().getPage() == 3){
                 BufferedImage rules;
                 try {
-                    rules = ImageIO.read(new File("rules.png"));
+                    rules = ImageIO.read(new File("src/main/resources/rules.png"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 g.drawImage(rules, 0, 0, 900, 700, this);
             }
+            if (logic.getMenu().getPage() == 4){
+                BufferedImage deadScreen;
+                try {
+                    deadScreen = ImageIO.read(new File("src/main/resources/gameover.png"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                g.drawImage(deadScreen, 0, 0, 900, 690, this);
+            }
 
-            if (logic.getGameActive() == 2 ) {
-                super.paintComponent(g);
+            if (logic.getMenu().getPage() == 2 ) {
                 this.font = new Font("MINECRAFT", Font.BOLD, 25);
 
                 g.setFont(font);
 
                 g.drawImage(image, 0, 0, this);
-                g.drawImage(logic.getPlayer().getImage(), logic.getPlayer().getX(), logic.getPlayer().getY(), logic.getPlayer().getWidth(), logic.getPlayer().getHeight(), this);
-                g.drawImage(logic.getMonkey().getImage(), logic.getMonkey().getX(), logic.getMonkey().getY(), logic.getMonkey().getWidth(), logic.getMonkey().getHeight(), this);
-                g.drawImage(logic.getBubbleHealth().getHealthImg(), logic.getBubbleHealth().getX(), logic.getBubbleHealth().getY(), logic.getBubbleHealth().getWidth(), logic.getBubbleHealth().getHeight(), this);
+                g.drawImage(logic.getPlayer().getImage(), logic.getPlayer().getCoord().x, logic.getPlayer().getCoord().y, logic.getPlayer().getSize().width, logic.getPlayer().getSize().height, this);
+                g.drawImage(logic.getMonkey().getImage(), logic.getMonkey().getCoord().x, logic.getMonkey().getCoord().y, logic.getMonkey().getSize().width, logic.getMonkey().getSize().height, this);
+                g.drawImage(logic.getBubbleHealth().getImage(), logic.getBubbleHealth().getCoord().x, logic.getBubbleHealth().getCoord().y, logic.getBubbleHealth().getSize().width, logic.getBubbleHealth().getSize().height, this);
 
-                for (Coconut coconut : logic.getCoconuts()) {
-                    g.drawImage(coconut.getImage(), coconut.getX(), coconut.getY(),
-                            coconut.getWidth(), coconut.getHeight(), this);
+                for (Coconut coconut : logic.getMonkey().getCoconuts()) {
+                    g.drawImage(coconut.getImage(), coconut.getCoord().x, coconut.getCoord().y,
+                            coconut.getSize().width, coconut.getSize().height, this);
                 }
                 for (FlowerSpike flowerSpike: logic.getFlowerSpikes()){
-                    g.drawImage(flowerSpike.getImg(), flowerSpike.getX(), flowerSpike.getY(), flowerSpike.getWidth(), flowerSpike.getHeight(), this);
+                    g.drawImage(flowerSpike.getImage(), flowerSpike.getCoord().x, flowerSpike.getCoord().y, flowerSpike.getSize().width, flowerSpike.getSize().height, this);
                 }
 
                 g.drawString("Score: " + Integer.toString(logic.getScore()), 720, 60);
-                for (Health health: logic.getHealth()){
+                for (Health health: logic.getPlayer().getHealth()){
                     if (health != null) {
-                        g.drawImage(health.getHealthImg(), health.getX(), health.getY(), health.getWidth(), health.getHeight(), this);
+                        g.drawImage(health.getImage(), health.getCoord().x, health.getCoord().y, health.getSize().width, health.getSize().height, this);
                     }
                 }
 
-                if (logic.getScore() >= 20){
-                    g.drawImage(logic.getSpider().getImage(), logic.getSpider().getX(), logic.getSpider().getY(), logic.getSpider().getWidth(), logic.getSpider().getHeight(), this);
+                if (logic.getScore() >= 15){
+                    g.drawImage(logic.getSpider().getImage(), logic.getSpider().getCoord().x, logic.getSpider().getCoord().y, logic.getSpider().getSize().width, logic.getSpider().getSize().height, this);
                 }
             }
 

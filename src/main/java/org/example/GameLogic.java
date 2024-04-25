@@ -36,13 +36,13 @@ import javax.swing.*;
             this.flowerSpikes[2] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png", this);
             this.flowerSpikes[3] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png", this);
 
-                this.timer = new Timer(1750, new ActionListener() { //prvni kokos se spawne zhruba po 1,75 sekundach
+                this.timer = new Timer(2000, new ActionListener() { //prvni kokos se spawne zhruba po 2000 sekundach
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (menu.getPage() == 2) {
                             monkey.throwCoconut();
                         }
-                        timer.setDelay(random.nextInt(500, 1400)); //dalsi nahodne od
+                        timer.setDelay(random.nextInt(500, 1400)); //dalsi nahodne
                     }
                 });
                 this.timer.start();
@@ -60,17 +60,24 @@ import javax.swing.*;
             if(menu.getPage() == 2 ) {
                 //pohyb opice
                 monkey.sideMove(16);
-
                 //zde volám metodu updateCoconut z tridy monkey
-                monkey.updateCoconuts();
+
+                player.move(10);
+
                 score = monkey.getScore();
+
+                monkey.updateCoconuts();
 
                 //kolize s kokosem a ubírání životů
                 for (Coconut coconut: monkey.getCoconuts()) {
                     if (player.checkCollision(new Rectangle(coconut.getCoord().x, coconut.getCoord().y, coconut.getSize().width, coconut.getSize().height))) {
                         if (coconut.getCoord().y <= 530) {
                             coconut.damagePlayer();
+
+                            //jakmile mě zasáhne kokos posunu ho na x mimo mapu, aby vypadalo, že mě zasáhl, jakmile pak dosáhne dane y souradnice bude vymazan z iteratoru
+                            coconut.getCoord().setX(1000);
                         }
+
                     }
                 }
 
@@ -84,7 +91,6 @@ import javax.swing.*;
                     spider.slowDownPlayer();
                 } else {
                     player.setCanMove(true);
-                    player.move(10);
                 }
 
                 //pádání bubliny s hp od score vetsi nebo rovno 5
@@ -95,6 +101,8 @@ import javax.swing.*;
                 //kolize mezi hráčem a bublinou se srdíčkem
                 if (player.checkCollision(new Rectangle(bubbleHealth.getCoord().x, bubbleHealth.getCoord().y, bubbleHealth.getSize().width, bubbleHealth.getSize().height))){
                     bubbleHealth.addHealth();
+
+                    //posunout bublinu na jiné x, aby při srazce s bublinou vypadalo, že praskla
                     bubbleHealth.getCoord().setX(1000);
 
                 }
@@ -140,11 +148,37 @@ import javax.swing.*;
             if (player.getHealth()[0] == null && player.getHealth()[1] == null && player.getHealth()[2] == null) {
                 menu.setPage(4);
             }
+            //resetovani
+            if (menu.getPage() == 4){
+                resetGame();
+            }
 
 
         }
 
-        //funkce na spawnovani kokosu
+        public void resetGame(){
+                player.getCoord().setX(400);
+
+                player.getHealth()[0] = new Health(30, 20, 40, 40, "srdce.png", this);
+                player.getHealth()[1] = new Health(70, 20, 40, 40, "srdce.png", this);
+                player.getHealth()[2] = new Health(110, 20, 40, 40, "srdce.png", this);
+
+                monkey.getCoord().setX(random.nextInt(50, 850));
+
+
+                bubbleHealth.setCoord(new Coordinates(random.nextInt(50, 850), - 100));
+
+                spider.setCoord(new Coordinates(900, 610));
+
+                flowerSpikes[0].setCoord(new Coordinates(random.nextInt(50, 850), 750));
+                flowerSpikes[1].setCoord(new Coordinates(random.nextInt(50, 850), 750));
+                flowerSpikes[2].setCoord(new Coordinates(random.nextInt(50, 850), 750));
+                flowerSpikes[3].setCoord(new Coordinates(random.nextInt(50, 850), 750));
+
+                //zde musím nastavit score na -1, protože z nějakého důvodu když zapnu hru tak se mi tam ukáže score 1 když tam mám nastavenou 0 a pak to neodpovida danému počtu vyhnutých kokosů
+                monkey.setScore(-1);
+
+        }
 
         public Menu getMenu() {
             return menu;

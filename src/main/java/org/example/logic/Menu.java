@@ -33,7 +33,7 @@ public class Menu implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (page == 1) {
+        if (page == 1 || page == 4) {
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 page = 2;
             }
@@ -43,22 +43,18 @@ public class Menu implements KeyListener {
             }
         }
 
-        if (page == 3) {
+        if (page == 3 || page == 4) {
             if (e.getKeyCode() == KeyEvent.VK_R) {
                 page = 1;
             }
         }
-        if (page == 4){
-            if (e.getKeyCode() == KeyEvent.VK_ENTER){
-                page = 5;
-                System.out.println(page);
-            }
-            if (e.getKeyCode() == KeyEvent.VK_R){
-                page = 1;
-                System.out.println(page);
 
+        if (page == 1){
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                System.exit(0);
             }
         }
+
 
 
 

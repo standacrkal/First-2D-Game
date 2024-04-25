@@ -88,7 +88,10 @@ public class GameGraphics extends JFrame{
                     g.drawImage(flowerSpike.getImage(), flowerSpike.getCoord().x, flowerSpike.getCoord().y, flowerSpike.getSize().width, flowerSpike.getSize().height, this);
                 }
 
-                g.drawString("Score: " + Integer.toString(logic.getScore()), 720, 60);
+                //zde musím uvést podmínku, protože při resetu mi to automaticky nastavuje skore na 1 když tam je 0, takže nastavím -1 a když tam není zatím 0 nevykreslí se
+                if (logic.getScore() >= 0) {
+                    g.drawString("Score: " + Integer.toString(logic.getScore()), 720, 60);
+                }
                 for (Health health: logic.getPlayer().getHealth()){
                     if (health != null) {
                         g.drawImage(health.getImage(), health.getCoord().x, health.getCoord().y, health.getSize().width, health.getSize().height, this);

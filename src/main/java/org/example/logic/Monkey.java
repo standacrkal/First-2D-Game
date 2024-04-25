@@ -4,6 +4,7 @@ package org.example.logic;
 
 import org.example.GameLogic;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -18,6 +19,7 @@ public class Monkey extends Entity {
         this.coconuts = new ArrayList<>();
         this.score = 0;
         this.logic = logic;
+
     }
 
     public void updateCoconuts(){
@@ -53,5 +55,9 @@ public class Monkey extends Entity {
 
     public ArrayList<Coconut> getCoconuts() {
         return coconuts;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

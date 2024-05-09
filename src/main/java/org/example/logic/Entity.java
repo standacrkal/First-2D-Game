@@ -1,10 +1,12 @@
 package org.example.logic;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 public class Entity {
@@ -13,6 +15,7 @@ public class Entity {
     private BufferedImage image;
     private boolean move, grow;
     private Random random;
+
     public Entity(int x, int y, int width, int height, String file){
         this.coord = new Coordinates(x, y);
         this.size = new Size(width, height);
@@ -23,6 +26,9 @@ public class Entity {
         }
         this.random = new Random();
     }
+
+
+
     public void fallDown(int speed){
         coord.y += speed;
     }
@@ -63,11 +69,17 @@ public class Entity {
         }
 
     }
+    public Rectangle getRectangle(){
+        return new Rectangle(coord.x, coord.y, size.width, size.height);
+    }
 
     public boolean checkCollision(Rectangle object){
-        Rectangle playerRect = new Rectangle(getCoord().x, getCoord().y, getSize().width, getSize().height);
-        return playerRect.intersects(object);
+        return getRectangle().intersects(object);
     }
+
+
+
+
 
     public Coordinates getCoord() {
         return coord;

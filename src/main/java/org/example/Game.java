@@ -7,7 +7,6 @@ public class Game {
 
     }
 
-
     public Game(){
         logic = new GameLogic();
         logic.initialize();

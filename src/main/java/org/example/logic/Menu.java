@@ -22,8 +22,8 @@ public class Menu implements KeyListener {
         this.page = 1;
     }
 
-    public BufferedImage getImgMenu() {
-        return imgMenu;
+    public void switchPage(){
+        setPage(4);
     }
 
     @Override
@@ -59,10 +59,6 @@ public class Menu implements KeyListener {
             }
         }
 
-
-
-
-
     }
 
     @Override
@@ -71,11 +67,18 @@ public class Menu implements KeyListener {
     }
 
 
+
+
+
     public int getPage() {
         return page;
     }
-
+    public BufferedImage getImgMenu() {
+        return imgMenu;
+    }
     public void setPage(int page) {
         this.page = page;
     }
+
+
 }

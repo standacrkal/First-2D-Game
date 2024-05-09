@@ -3,15 +3,18 @@ package org.example.logic;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class Monkey extends Entity {
     private ArrayList<Coconut> coconuts;
-    private int score;
+    private int coconutDodge;
+    private Random random;
 
     public Monkey( int x, int y, int width, int height, String file) {
         super(x, y, width, height, file);
         this.coconuts = new ArrayList<>();
-        this.score = 0;
+        this.coconutDodge = 0;
+        this.random = new Random();
 
     }
 
@@ -24,8 +27,8 @@ public class Monkey extends Entity {
             coconut.fallDown(25);
 
             // odstranění kokosuu diky iteratoru
-            if (coconut.getCoord().y >= 700) {
-                score ++;
+            if (coconut.getCoord().y >= 700 && coconut.getCoord().x <= 950) { // to s tím x tam dávám protože v logice mi metoda destroy posune kokos na x = 1000 takže aby se mi nepricitalo skore i pri zasahu
+                coconutDodge ++;
                 coconutIterator.remove();
             }
 
@@ -42,15 +45,27 @@ public class Monkey extends Entity {
 
     }
 
-    public int getScore() {
-        return score;
+    public void resetCoconutDodge(){
+        setCoconutDodge(-1);
+    }
+    
+    public void resetPosition(){
+        getCoord().setX(random.nextInt(50, 850));
+    }
+
+
+
+
+
+    public int getCoconutDodge() {
+        return coconutDodge;
     }
 
     public ArrayList<Coconut> getCoconuts() {
         return coconuts;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setCoconutDodge(int coconutDodge) {
+        this.coconutDodge = coconutDodge;
     }
 }

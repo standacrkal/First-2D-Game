@@ -1,8 +1,6 @@
 package org.example.logic;
 
 
-import org.example.GameLogic;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -74,6 +72,14 @@ public class Player extends Entity implements KeyListener {
 
 
     }
+    public void resetPosition(){
+        getCoord().setX(400);
+    }
+    public void resetHealth(){
+        getHealth()[0] = new Health(30, 20, 40, 40, "srdce.png");
+        getHealth()[1] = new Health(70, 20, 40, 40, "srdce.png");
+        getHealth()[2] = new Health(110, 20, 40, 40, "srdce.png");
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -112,6 +118,9 @@ public class Player extends Entity implements KeyListener {
     }
 
 
+
+
+
     public void setUp(boolean up) {
         this.up = up;
     }
@@ -124,8 +133,6 @@ public class Player extends Entity implements KeyListener {
         return health;
     }
 
-    public boolean isCanMove() {
-        return canMove;
-    }
+
 }
 

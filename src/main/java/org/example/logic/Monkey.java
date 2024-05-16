@@ -10,6 +10,7 @@ public class Monkey extends Entity {
     private int coconutDodge;
     private Random random;
 
+
     public Monkey( int x, int y, int width, int height, String file) {
         super(x, y, width, height, file);
         this.coconuts = new ArrayList<>();
@@ -35,15 +36,19 @@ public class Monkey extends Entity {
         }
     }
 
+
     public void throwCoconut() {
         Coconut newCoconut = new Coconut(getCoord().x, getCoord().y, 40, 40, "kokos.png");
 
         // Podmínka, aby kokosy nebyly generovány mimo herní okno
         if (getCoord().x >= 0 && getCoord().x <= 850 ) {
             coconuts.add(newCoconut);
+
         }
 
     }
+
+
 
     public void resetCoconutDodge(){
         setCoconutDodge(-1);

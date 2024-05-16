@@ -20,10 +20,11 @@ public class Menu implements KeyListener {
 
 
         this.page = 1;
+
     }
 
-    public void switchPage(){
-        setPage(4);
+    public void switchPage(int pageNumber ){
+        setPage(pageNumber);
     }
 
     @Override
@@ -36,6 +37,7 @@ public class Menu implements KeyListener {
         if (page == 1) {
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 page = 2;
+
             }
             if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
                 System.exit(0);
@@ -44,6 +46,7 @@ public class Menu implements KeyListener {
             if (e.getKeyCode() == KeyEvent.VK_P) {
                 page = 3;
             }
+
         }
 
         if (page == 3 || page == 4) {

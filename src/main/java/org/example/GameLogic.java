@@ -14,7 +14,7 @@ import java.util.Random;
     public class GameLogic  {
         private Player player;
         private Timer timer;
-        private Monkey monkey;
+        private Monkey monkey, monkey2;
         private Spider spider;
         private int score, highScore;
         private Random random;
@@ -22,33 +22,39 @@ import java.util.Random;
         private Health bubbleHealth;
         private Thistle[] thistles;
         private int level;
+
         private Sound menuMusic, gameMusic;
+
 
         public void initialize() {
 
             this.random = new Random();
             this.player = new Player(400, 540, 90, 90, "mikyr.png");
             this.monkey = new Monkey(random.nextInt(50, 850), 90, 90, 90, "opica.png");
+            this.monkey2 = new Monkey(0, 90, 70, 70, "opica.png");
             this.spider = new Spider(900, 610, 90, 60, "pavouk.png");
             this.score = 0;
             this.level = 1;
             this.menu = new Menu("menu.png");
             this.bubbleHealth = new Health(random.nextInt(50, 850), - 100, 40, 40, "bubble.png");
             this.highScore = loadHighScoreFile();
-
-
             this.thistles = new Thistle[4];
-            this.thistles[0] = new Thistle(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
-            this.thistles[1] = new Thistle(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
-            this.thistles[2] = new Thistle(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
-            this.thistles[3] = new Thistle(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
-
+            this.thistles[0] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
+            this.thistles[1] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
+            this.thistles[2] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
+            this.thistles[3] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
 
             this.timer = new Timer(2000, new ActionListener() { //prvni kokos se spawne zhruba po 2000 sekundach
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (menu.getPage() == 2) {
                         monkey.throwCoconut();
+                        if (level == 4) {
+                            monkey2.throwCoconut();
+                        }
+
+
+
                     }
                     timer.setDelay(random.nextInt(500, 1400)); //dalsi nahodne
                 }
@@ -64,15 +70,18 @@ import java.util.Random;
 
         }
 
+
         public void update() {
+
             if (menu.getPage() == 1){
                 menuMusic.loop();
-            }
 
+            }
 
             if(menu.getPage() == 2 ) {
                 menuMusic.stop();
                 gameMusic.start();
+
                 //pohyb opice
                 monkey.sideMove(16);
 
@@ -83,16 +92,24 @@ import java.util.Random;
                 //zde volám metodu updateCoconut z tridy monkey
                 monkey.updateCoconuts();
 
-                //kolize s kokosem a ubírání životů
+
+                //kolize s kokosem co hází 1. opice
                 for (Coconut coconut: monkey.getCoconuts()) {
                     if (player.checkCollision(coconut.getRectangle())) {
-                        if (coconut.getCoord().y <= 530) {
-                            player.damage();
+                        player.damage();
 
-                            //jakmile mě zasáhne kokos posunu ho na x mimo mapu, aby vypadalo, že mě zasáhl, jakmile pak dosáhne dane y souradnice bude vymazan z iteratoru
-                            coconut.destroy();
-                        }
+                        //jakmile mě zasáhne kokos posunu ho na x mimo mapu, aby vypadalo, že mě zasáhl, jakmile pak dosáhne dane y souradnice bude vymazan z iteratoru
+                        coconut.destroy();
 
+                    }
+                }
+
+
+                //kolize s kokosem co hází 2. opice
+                for (Coconut coconut: monkey2.getCoconuts()){
+                    if (player.checkCollision(coconut.getRectangle())){
+                        player.damage();
+                        coconut.destroy();
                     }
                 }
 
@@ -110,9 +127,10 @@ import java.util.Random;
                 //kolize s pavoukem a omezení pohybu
                 if (player.checkCollision(spider.getRectangle())) {
                     player.slowDown();
-                } else {
+                }else {
                     player.moveNormal();
                 }
+
 
 
                 //kolize mezi hráčem a bublinou se srdíčkem
@@ -157,13 +175,22 @@ import java.util.Random;
                             }
                         }
                     }
+
+
+
                 }
+                if (score >= 40){
+                    level = 4;
+                    monkey2.sideMove(5);
+                    monkey2.updateCoconuts();
+                }
+
 
             }
 
             //prepnuti hry
             if (player.getHealth()[0] == null && player.getHealth()[1] == null && player.getHealth()[2] == null) {
-                menu.switchPage();
+                menu.switchPage(4);
             }
 
             //resetovani
@@ -181,6 +208,8 @@ import java.util.Random;
                 player.resetHealth();
 
                 monkey.resetPosition();
+
+                monkey2.resetPosition();
 
                 bubbleHealth.resetPosition();
 
@@ -223,6 +252,7 @@ import java.util.Random;
 
 
 
+
         public Menu getMenu() {
             return menu;
         }
@@ -257,6 +287,14 @@ import java.util.Random;
 
         public int getHighScore() {
             return highScore;
+        }
+
+        public Sound getMenuMusic() {
+            return menuMusic;
+        }
+
+        public Monkey getMonkey2() {
+            return monkey2;
         }
     }
 

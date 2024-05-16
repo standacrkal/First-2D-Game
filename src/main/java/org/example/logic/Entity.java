@@ -1,12 +1,11 @@
 package org.example.logic;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.util.Random;
 
 public class Entity {
@@ -96,5 +95,6 @@ public class Entity {
     public void setCoord(Coordinates coord) {
         this.coord = coord;
     }
+
 
 }

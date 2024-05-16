@@ -11,4 +11,5 @@ public class Spider extends Entity {
         setCoord(new Coordinates(900, 610));
     }
 
+
 }

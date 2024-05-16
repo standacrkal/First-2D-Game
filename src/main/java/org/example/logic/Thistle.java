@@ -22,7 +22,7 @@ public class Thistle extends Entity{
         getCoord().setX(random.nextInt(50, 850));
     }
     public void resetPosition(){
-        setCoord(new Coordinates(random.nextInt(50, 850), 750));
+        setCoord(new Coordinates(random.nextInt(50, 850), 700));
     }
 
 

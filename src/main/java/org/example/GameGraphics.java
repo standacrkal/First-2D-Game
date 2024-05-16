@@ -16,9 +16,9 @@ import java.io.IOException;
 public class GameGraphics extends JFrame{
     private GameLogic logic;
     private Draw draw;
-    private BufferedImage bg,deadScreen, rules, bg2;
-    private Image bg3;
-    ImageIcon bgGif;
+    private BufferedImage bg,deadScreen, rules, bg2, loadingScreeen;
+    private Image bg3, bg4;
+    ImageIcon bgGif, bg2Gif;
 
     public GameGraphics(GameLogic logic){
         setSize(900, 720);
@@ -32,7 +32,11 @@ public class GameGraphics extends JFrame{
         add(draw);
 
 
-
+        try {
+            loadingScreeen = ImageIO.read(new File("src/main/resources/loadingScreen.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
         //pozadi lvl1
@@ -50,9 +54,13 @@ public class GameGraphics extends JFrame{
         }
 
 
+
         //pozadi lvl3
         bgGif = new ImageIcon("src/main/resources/bg3.gif");
         bg3 = bgGif.getImage();
+
+        bg2Gif = new ImageIcon("src/main/resources/bg4.gif");
+        bg4 = bg2Gif.getImage();
 
 
 
@@ -89,15 +97,20 @@ public class GameGraphics extends JFrame{
         protected  void paintComponent(Graphics g){
             super.paintComponent(g);
 
+            //dokud se nenacte pisen bude tam loading az se nacte tak tam bude menu
+            if (logic.getMenu().getPage() == 1 && !logic.getMenuMusic().getClip().isRunning()){
+                g.drawImage(loadingScreeen, 0, 0, 900, 720, this);
+            }
 
             //MENU
-            if (logic.getMenu().getPage() == 1 ){
+            if (logic.getMenu().getPage() == 1 && logic.getMenuMusic().getClip().isRunning()) {
                 g.drawImage(logic.getMenu().getImgMenu(), 0, 0, 900, 720, this);
                 this.font = new Font("MINECRAFT", Font.BOLD, 25);
                 g.setFont(font);
                 g.setColor(Color.WHITE);
                 g.drawString("HIGH SCORE: " + Integer.toString(logic.getHighScore()), 345, 590);
             }
+
 
 
             //PRAVIDLA
@@ -138,6 +151,12 @@ public class GameGraphics extends JFrame{
                     g.drawImage(bg3,0, 0,900,720,this);
                 }
 
+                //POZADI PRO 4 LEVEL A OPICA
+                if (logic.getLevel() == 4){
+                    g.drawImage(bg4,0,0,900, 720, this);
+                    g.drawImage(logic.getMonkey2().getImage(), logic.getMonkey2().getCoord().x, logic.getMonkey2().getCoord().y, logic.getMonkey2().getSize().width, logic.getMonkey2().getSize().height, this);
+                }
+
                 //ENTITY
                 g.drawImage(logic.getPlayer().getImage(), logic.getPlayer().getCoord().x, logic.getPlayer().getCoord().y, logic.getPlayer().getSize().width, logic.getPlayer().getSize().height, this);
                 g.drawImage(logic.getMonkey().getImage(), logic.getMonkey().getCoord().x, logic.getMonkey().getCoord().y, logic.getMonkey().getSize().width, logic.getMonkey().getSize().height, this);
@@ -148,6 +167,10 @@ public class GameGraphics extends JFrame{
                             coconut.getSize().width, coconut.getSize().height, this);
                 }
 
+                for (Coconut coconut : logic.getMonkey2().getCoconuts()) {
+                    g.drawImage(coconut.getImage(), coconut.getCoord().x, coconut.getCoord().y,
+                            coconut.getSize().width, coconut.getSize().height, this);
+                }
 
                 for (Thistle thistle : logic.getThistles()){
                     g.drawImage(thistle.getImage(), thistle.getCoord().x, thistle.getCoord().y, thistle.getSize().width, thistle.getSize().height, this);
@@ -159,8 +182,6 @@ public class GameGraphics extends JFrame{
                         g.drawImage(health.getImage(), health.getCoord().x, health.getCoord().y, health.getSize().width, health.getSize().height, this);
                     }
                 }
-
-
                 if (logic.getScore() >= 15){
                     g.drawImage(logic.getSpider().getImage(), logic.getSpider().getCoord().x, logic.getSpider().getCoord().y, logic.getSpider().getSize().width, logic.getSpider().getSize().height, this);
                 }
@@ -175,6 +196,8 @@ public class GameGraphics extends JFrame{
                 //Level
                 g.drawString("Level: " + Integer.toString(logic.getLevel()), 400, 50);
             }
+
+
 
         }
     }

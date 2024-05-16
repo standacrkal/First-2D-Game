@@ -25,8 +25,8 @@ public class Sound {
     }
     public void start() {
         if (clip != null) {
-            if (!clip.isRunning()) { // Check if the clip is not already playing
-                clip.setFramePosition(0); // Reset position to start
+            if (!clip.isRunning()) {
+                clip.setFramePosition(0);
                 clip.start();
             }
         }
@@ -38,11 +38,8 @@ public class Sound {
         }
     }
 
-    public void close() {
-        if (clip != null) {
-            clip.close();
-        }
+    public Clip getClip() {
+        return clip;
     }
-
 }
 

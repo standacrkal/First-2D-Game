@@ -12,8 +12,6 @@ public class Player extends Entity implements KeyListener {
     private boolean canMove;
     private Health[] health;
 
-
-
     public Player(int x, int y, int width, int height, String file) {
         super(x, y, width, height, file);
         this.canMove = true;
@@ -21,6 +19,8 @@ public class Player extends Entity implements KeyListener {
         this.health[0] = new Health(30, 20, 40, 40, "srdce.png");
         this.health[1] = new Health(70, 20, 40, 40, "srdce.png");
         this.health[2] = new Health(110, 20, 40, 40, "srdce.png");
+
+
     }
 
     public void damage(){
@@ -45,6 +45,7 @@ public class Player extends Entity implements KeyListener {
         if (canMove) {
             setCanMove(false);
         }
+
     }
     public void moveNormal(){
         setCanMove(true);
@@ -116,8 +117,6 @@ public class Player extends Entity implements KeyListener {
         }
 
     }
-
-
 
 
 

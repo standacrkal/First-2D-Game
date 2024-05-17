@@ -59,7 +59,7 @@ import java.util.Random;
 
 
                     }
-                    timer.setDelay(random.nextInt(500, 1400)); //dalsi nahodne
+                    timer.setDelay(random.nextInt(700, 1400)); //dalsi nahodne
                 }
             });
             this.timer.start();

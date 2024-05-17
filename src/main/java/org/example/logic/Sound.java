@@ -2,7 +2,7 @@ package org.example.logic;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import java.io.File;
+
 
 public class Sound {
     private Clip clip;
@@ -10,7 +10,7 @@ public class Sound {
     public Sound(String file) {
         try {
             clip = AudioSystem.getClip();
-            clip.open(AudioSystem.getAudioInputStream(new File("src/main/resources/" + file)));
+            clip.open(AudioSystem.getAudioInputStream(getClass().getResource("/" + file)));
         } catch (Exception e) {
             e.printStackTrace();
         }

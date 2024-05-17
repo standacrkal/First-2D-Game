@@ -14,7 +14,7 @@ public class Menu implements KeyListener {
 
     public Menu(String file) {
         try {
-            this.imgMenu = ImageIO.read(new File("src/main/resources/" + file));
+            this.imgMenu = ImageIO.read(getClass().getResource("/" + file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -31,75 +31,66 @@ public class GameGraphics extends JFrame{
         this.logic = logic;
         add(draw);
 
-
+        //loading
         try {
-            this.loadingScreeen = ImageIO.read(new File("src/main/resources/loadingScreen.png"));
+            this.loadingScreeen = ImageIO.read(getClass().getResource("/loadingScreen.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-
-        //pozadi lvl1
+        // pozadi lvl1
         try {
-            this.bg = ImageIO.read(new File("src/main/resources/bg.png"));
+            this.bg = ImageIO.read(getClass().getResource("/bg.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        //pozadi lvl2
+        // pozadi lvl2
         try {
-            this.bg2 = ImageIO.read(new File("src/main/resources/bg2.png"));
+            this.bg2 = ImageIO.read(getClass().getResource("/bg2.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-
-
-        //pozadi lvl3
-        this.bgGif = new ImageIcon("src/main/resources/bg3.gif");
+        // pozadi lvl3
+        this.bgGif = new ImageIcon(getClass().getResource("/bg3.gif"));
         this.bg3 = bgGif.getImage();
 
-        this.bg2Gif = new ImageIcon("src/main/resources/bg4.gif");
+        this.bg2Gif = new ImageIcon(getClass().getResource("/bg4.gif"));
         this.bg4 = bg2Gif.getImage();
 
-
-
-        //deadscreen
+        // deadscreen
         try {
-            this.deadScreen = ImageIO.read(new File("src/main/resources/gameover.png"));
+            this.deadScreen = ImageIO.read(getClass().getResource("/gameover.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-
-
-        //pravidla
+        // pravidla
         try {
-            this.rules = ImageIO.read(new File("src/main/resources/rules.png"));
+            this.rules = ImageIO.read(getClass().getResource("/rules.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        //zvuk
+        // zvuk
         try {
-            this.sound = ImageIO.read(new File("src/main/resources/sound.png"));
+            this.sound = ImageIO.read(getClass().getResource("/sound.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        //ztlumeny zvuk
+        // ztlumeny zvuk
         try {
-            this.soundMute = ImageIO.read(new File("src/main/resources/soundMute.png"));
+            this.soundMute = ImageIO.read(getClass().getResource("/soundMute.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
 
         addKeyListener(logic.getPlayer());
         addKeyListener(logic.getMenu());
 
-        gameIcon = new ImageIcon("src/main/resources/icon.png");
+        gameIcon = new ImageIcon(getClass().getResource("/icon.png"));
         setIconImage(gameIcon.getImage());
     }
 

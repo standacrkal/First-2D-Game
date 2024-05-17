@@ -19,7 +19,7 @@ public class Entity {
         this.coord = new Coordinates(x, y);
         this.size = new Size(width, height);
         try {
-            this.image = ImageIO.read(new File("src/main/resources/" + file));
+            this.image = ImageIO.read(getClass().getResource("/" + file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

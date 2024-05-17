@@ -16,7 +16,7 @@ import java.io.IOException;
 public class GameGraphics extends JFrame{
     private GameLogic logic;
     private Draw draw;
-    private BufferedImage bg,deadScreen, rules, bg2, loadingScreeen;
+    private BufferedImage bg,deadScreen, rules, bg2, loadingScreeen, sound, soundMute;
     private Image bg3, bg4;
     ImageIcon bgGif, bg2Gif;
 
@@ -33,7 +33,7 @@ public class GameGraphics extends JFrame{
 
 
         try {
-            loadingScreeen = ImageIO.read(new File("src/main/resources/loadingScreen.png"));
+            this.loadingScreeen = ImageIO.read(new File("src/main/resources/loadingScreen.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -41,14 +41,14 @@ public class GameGraphics extends JFrame{
 
         //pozadi lvl1
         try {
-            bg = ImageIO.read(new File("src/main/resources/bg.png"));
+            this.bg = ImageIO.read(new File("src/main/resources/bg.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         //pozadi lvl2
         try {
-            bg2 = ImageIO.read(new File("src/main/resources/bg2.png"));
+            this.bg2 = ImageIO.read(new File("src/main/resources/bg2.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -56,17 +56,17 @@ public class GameGraphics extends JFrame{
 
 
         //pozadi lvl3
-        bgGif = new ImageIcon("src/main/resources/bg3.gif");
-        bg3 = bgGif.getImage();
+        this.bgGif = new ImageIcon("src/main/resources/bg3.gif");
+        this.bg3 = bgGif.getImage();
 
-        bg2Gif = new ImageIcon("src/main/resources/bg4.gif");
-        bg4 = bg2Gif.getImage();
+        this.bg2Gif = new ImageIcon("src/main/resources/bg4.gif");
+        this.bg4 = bg2Gif.getImage();
 
 
 
         //deadscreen
         try {
-            deadScreen = ImageIO.read(new File("src/main/resources/gameover.png"));
+            this.deadScreen = ImageIO.read(new File("src/main/resources/gameover.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -75,7 +75,21 @@ public class GameGraphics extends JFrame{
 
         //pravidla
         try {
-            rules = ImageIO.read(new File("src/main/resources/rules.png"));
+            this.rules = ImageIO.read(new File("src/main/resources/rules.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        //zvuk
+        try {
+            this.sound = ImageIO.read(new File("src/main/resources/sound.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        //ztlumeny zvuk
+        try {
+            this.soundMute = ImageIO.read(new File("src/main/resources/soundMute.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -98,17 +112,26 @@ public class GameGraphics extends JFrame{
             super.paintComponent(g);
 
             //dokud se nenacte pisen bude tam loading az se nacte tak tam bude menu
-            if (logic.getMenu().getPage() == 1 && !logic.getMenuMusic().getClip().isRunning()){
+            if (logic.getMenu().getPage() == 1 && logic.isLoading()){
                 g.drawImage(loadingScreeen, 0, 0, 900, 720, this);
             }
 
             //MENU
-            if (logic.getMenu().getPage() == 1 && logic.getMenuMusic().getClip().isRunning()) {
+            if (logic.getMenu().getPage() == 1 && !logic.isLoading()) {
+
                 g.drawImage(logic.getMenu().getImgMenu(), 0, 0, 900, 720, this);
-                this.font = new Font("MINECRAFT", Font.BOLD, 25);
+                this.font = new Font("River Adventurer", Font.ITALIC, 30);
                 g.setFont(font);
                 g.setColor(Color.WHITE);
-                g.drawString("HIGH SCORE: " + Integer.toString(logic.getHighScore()), 345, 590);
+                g.drawString("HIGH SCORE: " + Integer.toString(logic.getHighScore()), 345, 585);
+
+
+                //ZVUK OBRAZEK MENU
+                if (logic.getMenu().isMenuMute()){
+                    g.drawImage(soundMute, 800, 625, 50, 50, this);
+                }else {
+                    g.drawImage(sound, 800, 625, 50, 50, this);
+                }
             }
 
 
@@ -122,7 +145,7 @@ public class GameGraphics extends JFrame{
             //DEADSCREEN
             if (logic.getMenu().getPage() == 4){
                 g.drawImage(deadScreen, 0, 0, 900, 690, this);
-                this.font = new Font("MINECRAFT", Font.BOLD, 25);
+                this.font = new Font("River Adventurer", Font.ITALIC, 25);
                 g.setFont(font);
                 g.setColor(Color.white);
                 g.drawString("HIGH SCORE: " + Integer.toString(logic.getHighScore()), 40, 633);
@@ -130,7 +153,7 @@ public class GameGraphics extends JFrame{
 
             //HRA
             if (logic.getMenu().getPage() == 2 ) {
-                this.font = new Font("MINECRAFT", Font.BOLD, 25);
+                this.font = new Font("River Adventurer", Font.ITALIC, 30);
                 g.setFont(font);
 
 
@@ -189,12 +212,19 @@ public class GameGraphics extends JFrame{
 
                 //zde musím uvést podmínku, protože při resetu mi to automaticky nastavuje skore na 1 když tam je 0, takže nastavím -1 a když tam není zatím 0 nevykreslí se
                 if (logic.getScore() >= 0) {
-                    g.drawString("Score: " + Integer.toString(logic.getScore()), 720, 60);
+                    g.drawString("Score: " + Integer.toString(logic.getScore()), 700, 50);
                 }
 
 
                 //Level
                 g.drawString("Level: " + Integer.toString(logic.getLevel()), 400, 50);
+
+                //ZVUK OBRAZEK VE HŘE
+                if (logic.getMenu().isGameMute()){
+                    g.drawImage(soundMute, 180, 15, 50, 50, this);
+                }else {
+                    g.drawImage(sound, 180, 15, 50, 50, this);
+                }
             }
 
 

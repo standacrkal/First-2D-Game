@@ -48,6 +48,7 @@ public class Entity {
             }
         }
     }
+
     public void grow(int speed){
         if (grow){
             if (coord.y > 590){

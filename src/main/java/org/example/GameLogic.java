@@ -22,8 +22,11 @@ import java.util.Random;
         private Health bubbleHealth;
         private Thistle[] thistles;
         private int level;
+        private boolean loading;
 
         private Sound menuMusic, gameMusic;
+        private int spiderTimer;
+        private boolean checkSpiderTimer;
 
 
         public void initialize() {
@@ -32,7 +35,7 @@ import java.util.Random;
             this.player = new Player(400, 540, 90, 90, "mikyr.png");
             this.monkey = new Monkey(random.nextInt(50, 850), 90, 90, 90, "opica.png");
             this.monkey2 = new Monkey(0, 90, 70, 70, "opica.png");
-            this.spider = new Spider(900, 610, 90, 60, "pavouk.png");
+            this.spider = new Spider(900, 610, 80, 60, "pavouk.png");
             this.score = 0;
             this.level = 1;
             this.menu = new Menu("menu.png");
@@ -43,7 +46,7 @@ import java.util.Random;
             this.thistles[1] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
             this.thistles[2] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
             this.thistles[3] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
-
+            this.loading = true;
             this.timer = new Timer(2000, new ActionListener() { //prvni kokos se spawne zhruba po 2000 sekundach
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -64,6 +67,9 @@ import java.util.Random;
             this.menuMusic = new Sound("intro.wav");
             this.gameMusic = new Sound("awimawe.wav");
 
+            this.spiderTimer = 0;
+            this.checkSpiderTimer = false;
+
         }
 
         public GameLogic() {
@@ -73,14 +79,31 @@ import java.util.Random;
 
         public void update() {
 
+            //TAHLE PODMÍNKA SLOUŽÍ HLAVNĚ PRO GRAFIKU
+            if (menuMusic.getClip().isRunning()){
+                loading = false;
+            }
+
+            //Zapínání a vypínání muziky
             if (menu.getPage() == 1){
-                menuMusic.loop();
+                menuMusic.start();
+
+                if (!menu.isMenuMute()){
+                    menuMusic.start();
+                }else {
+                    menuMusic.stop();
+                }
 
             }
 
             if(menu.getPage() == 2 ) {
                 menuMusic.stop();
-                gameMusic.start();
+
+                if (!menu.isGameMute()) {
+                    gameMusic.start();
+                }else {
+                    gameMusic.stop();
+                }
 
                 //pohyb opice
                 monkey.sideMove(16);
@@ -127,9 +150,21 @@ import java.util.Random;
                 //kolize s pavoukem a omezení pohybu
                 if (player.checkCollision(spider.getRectangle())) {
                     player.slowDown();
-                }else {
-                    player.moveNormal();
+                    checkSpiderTimer = true;
                 }
+                if (checkSpiderTimer){
+                    spiderTimer++;
+                }
+                if (spiderTimer >= 80){
+                    checkSpiderTimer = false;
+                    player.moveNormal();
+                    spiderTimer = 0;
+
+                }
+
+
+                System.out.println(spiderTimer);
+
 
 
 
@@ -214,6 +249,7 @@ import java.util.Random;
                 bubbleHealth.resetPosition();
 
                 spider.resetPosition();
+                spiderTimer = 0;
 
                 thistles[0].resetPosition();
                 thistles[1].resetPosition();
@@ -295,6 +331,10 @@ import java.util.Random;
 
         public Monkey getMonkey2() {
             return monkey2;
+        }
+
+        public boolean isLoading() {
+            return loading;
         }
     }
 

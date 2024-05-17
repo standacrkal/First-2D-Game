@@ -10,6 +10,7 @@ import java.io.IOException;
 public class Menu implements KeyListener {
     private BufferedImage imgMenu;
     private int page;
+    private boolean menuMute, gameMute;
 
     public Menu(String file) {
         try {
@@ -18,8 +19,9 @@ public class Menu implements KeyListener {
             throw new RuntimeException(e);
         }
 
-
         this.page = 1;
+        this.menuMute = false;
+        this.gameMute = false;
 
     }
 
@@ -46,7 +48,23 @@ public class Menu implements KeyListener {
             if (e.getKeyCode() == KeyEvent.VK_P) {
                 page = 3;
             }
+            if (e.getKeyCode() == KeyEvent.VK_M){
+                menuMute = true;
+            }
 
+            if (e.getKeyCode() == KeyEvent.VK_U) {
+                menuMute = false;
+            }
+
+        }
+        if (page == 2){
+            if (e.getKeyCode() == KeyEvent.VK_M){
+                gameMute = true;
+            }
+
+            if (e.getKeyCode() == KeyEvent.VK_U) {
+                gameMute = false;
+            }
         }
 
         if (page == 3 || page == 4) {
@@ -83,5 +101,11 @@ public class Menu implements KeyListener {
         this.page = page;
     }
 
+    public boolean isMenuMute() {
+        return menuMute;
+    }
 
+    public boolean isGameMute() {
+        return gameMute;
+    }
 }

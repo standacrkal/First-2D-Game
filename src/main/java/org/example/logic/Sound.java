@@ -15,14 +15,7 @@ public class Sound {
             e.printStackTrace();
         }
     }
-    public void loop() {
-        if (clip != null) {
-            if (!clip.isRunning()) {
-                clip.setFramePosition(0);
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
-            }
-        }
-    }
+
     public void start() {
         if (clip != null) {
             if (!clip.isRunning()) {

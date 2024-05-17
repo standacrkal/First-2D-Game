@@ -46,6 +46,7 @@ public class Player extends Entity implements KeyListener {
             setCanMove(false);
         }
 
+
     }
     public void moveNormal(){
         setCanMove(true);

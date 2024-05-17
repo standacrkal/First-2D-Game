@@ -18,7 +18,7 @@ public class GameGraphics extends JFrame{
     private Draw draw;
     private BufferedImage bg,deadScreen, rules, bg2, loadingScreeen, sound, soundMute;
     private Image bg3, bg4;
-    ImageIcon bgGif, bg2Gif;
+    ImageIcon gameIcon, bgGif, bg2Gif;
 
     public GameGraphics(GameLogic logic){
         setSize(900, 720);
@@ -98,6 +98,9 @@ public class GameGraphics extends JFrame{
 
         addKeyListener(logic.getPlayer());
         addKeyListener(logic.getMenu());
+
+        gameIcon = new ImageIcon("src/main/resources/icon.png");
+        setIconImage(gameIcon.getImage());
     }
 
     public void render(GameLogic logic) {
@@ -221,9 +224,9 @@ public class GameGraphics extends JFrame{
 
                 //ZVUK OBRAZEK VE HŘE
                 if (logic.getMenu().isGameMute()){
-                    g.drawImage(soundMute, 180, 15, 50, 50, this);
+                    g.drawImage(soundMute, 160, 15, 50, 50, this);
                 }else {
-                    g.drawImage(sound, 180, 15, 50, 50, this);
+                    g.drawImage(sound, 160, 15, 50, 50, this);
                 }
             }
 

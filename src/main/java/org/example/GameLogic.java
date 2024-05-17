@@ -35,7 +35,7 @@ import java.util.Random;
             this.player = new Player(400, 540, 90, 90, "mikyr.png");
             this.monkey = new Monkey(random.nextInt(50, 850), 90, 90, 90, "opica.png");
             this.monkey2 = new Monkey(0, 90, 70, 70, "opica.png");
-            this.spider = new Spider(900, 610, 80, 60, "pavouk.png");
+            this.spider = new Spider(900, 610, 70, 50, "pavouk.png");
             this.score = 0;
             this.level = 1;
             this.menu = new Menu("menu.png");
@@ -163,10 +163,6 @@ import java.util.Random;
                 }
 
 
-                System.out.println(spiderTimer);
-
-
-
 
                 //kolize mezi hráčem a bublinou se srdíčkem
                 if (player.checkCollision(bubbleHealth.getRectangle())){
@@ -216,7 +212,7 @@ import java.util.Random;
                 }
                 if (score >= 40){
                     level = 4;
-                    monkey2.sideMove(5);
+                    monkey2.sideMove(4);
                     monkey2.updateCoconuts();
                 }
 
@@ -250,6 +246,7 @@ import java.util.Random;
 
                 spider.resetPosition();
                 spiderTimer = 0;
+                player.moveNormal();
 
                 thistles[0].resetPosition();
                 thistles[1].resetPosition();
@@ -325,9 +322,6 @@ import java.util.Random;
             return highScore;
         }
 
-        public Sound getMenuMusic() {
-            return menuMusic;
-        }
 
         public Monkey getMonkey2() {
             return monkey2;

@@ -31,6 +31,7 @@ public class Entity {
     public void fallDown(int speed){
         coord.y += speed;
     }
+
     public void sideMove(int speed){
         if (move){
             if (coord.x <= 900){
@@ -69,9 +70,11 @@ public class Entity {
         }
 
     }
+
     public Rectangle getRectangle(){
         return new Rectangle(coord.x, coord.y, size.width, size.height);
     }
+
 
     public boolean checkCollision(Rectangle object){
         return getRectangle().intersects(object);

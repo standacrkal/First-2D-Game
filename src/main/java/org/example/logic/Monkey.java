@@ -49,7 +49,6 @@ public class Monkey extends Entity {
     }
 
 
-
     public void resetCoconutDodge(){
         setCoconutDodge(-1);
     }

@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 
@@ -26,7 +25,6 @@ public class GameGraphics extends JFrame{
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
-        setVisible(true);
         this.draw = new Draw();
         this.logic = logic;
         add(draw);
@@ -92,6 +90,8 @@ public class GameGraphics extends JFrame{
 
         gameIcon = new ImageIcon(getClass().getResource("/icon.png"));
         setIconImage(gameIcon.getImage());
+
+        setVisible(true);
     }
 
     public void render(GameLogic logic) {

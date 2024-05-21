@@ -20,7 +20,6 @@ public class Player extends Entity implements KeyListener {
         this.health[1] = new Health(70, 20, 40, 40, "srdce.png");
         this.health[2] = new Health(110, 20, 40, 40, "srdce.png");
 
-
     }
 
     public void damage(){
@@ -45,7 +44,6 @@ public class Player extends Entity implements KeyListener {
         if (canMove) {
             setCanMove(false);
         }
-
 
     }
     public void moveNormal(){
@@ -72,11 +70,8 @@ public class Player extends Entity implements KeyListener {
             getCoord().y += 10;
         }
 
+    }
 
-    }
-    public void resetPosition(){
-        getCoord().setX(400);
-    }
     public void resetHealth(){
         getHealth()[0] = new Health(30, 20, 40, 40, "srdce.png");
         getHealth()[1] = new Health(70, 20, 40, 40, "srdce.png");

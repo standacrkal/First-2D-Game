@@ -122,7 +122,7 @@ import java.util.Random;
                         player.damage();
 
                         //jakmile mě zasáhne kokos posunu ho na x mimo mapu, aby vypadalo, že mě zasáhl, jakmile pak dosáhne dane y souradnice bude vymazan z iteratoru
-                        coconut.destroy();
+                        coconut.destroy(1000);
 
                     }
                 }
@@ -132,7 +132,7 @@ import java.util.Random;
                 for (Coconut coconut: monkey2.getCoconuts()){
                     if (player.checkCollision(coconut.getRectangle())){
                         player.damage();
-                        coconut.destroy();
+                        coconut.destroy(1000);
                     }
                 }
 
@@ -169,13 +169,13 @@ import java.util.Random;
                     player.addHealth();
 
                     //posunout bublinu na jiné x, aby při srazce s bublinou vypadalo, že praskla
-                    bubbleHealth.destroy();
+                    bubbleHealth.destroy(1000);
 
                 }
 
                 //jakmile bublina dosáhne y vetsi nebo rovno 3000 vrací se zpet na horu, aby mohla padat
                 if (bubbleHealth.getCoord().y >= 3000){
-                    bubbleHealth.resetPosition();
+                    bubbleHealth.resetPosition(random.nextInt(50, 850), -150);
                 }
 
 
@@ -234,24 +234,24 @@ import java.util.Random;
         }
 
         public void resetGame(){
-                player.resetPosition();
+                player.resetXPosition(400);
 
                 player.resetHealth();
 
-                monkey.resetPosition();
+                monkey.resetXPosition(random.nextInt(50, 850));
 
-                monkey2.resetPosition();
+                monkey2.resetXPosition(30);
 
-                bubbleHealth.resetPosition();
+                bubbleHealth.resetXPosition(1000);
 
-                spider.resetPosition();
+                spider.resetPosition(900, 610);
                 spiderTimer = 0;
                 player.moveNormal();
 
-                thistles[0].resetPosition();
-                thistles[1].resetPosition();
-                thistles[2].resetPosition();
-                thistles[3].resetPosition();
+                thistles[0].resetPosition(random.nextInt(50, 850), 700);
+                thistles[1].resetPosition(random.nextInt(50, 850), 700);
+                thistles[2].resetPosition(random.nextInt(50, 850), 700);
+                thistles[3].resetPosition(random.nextInt(50, 850), 700);
 
                 monkey.resetCoconutDodge();
 

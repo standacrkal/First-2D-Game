@@ -7,9 +7,7 @@ public class Spider extends Entity {
         super(x, y, width, height, file);
 
     }
-    public void resetPosition(){
-        setCoord(new Coordinates(900, 610));
-    }
+
 
 
 }

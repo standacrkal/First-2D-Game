@@ -67,7 +67,6 @@ public class Entity {
         if (coord.y >= 1000){
             coord.x = random.nextInt(50, 850);
         }
-
     }
 
     public Rectangle getRectangle(){
@@ -79,8 +78,17 @@ public class Entity {
         return getRectangle().intersects(object);
     }
 
+    public void resetPosition(int x, int y){
+        setCoord(new Coordinates(x, y));
+    }
 
+    public void destroy(int x){
+        getCoord().setX(x);
+    }
 
+    public void resetXPosition(int x){
+        getCoord().setX(x);
+    }
 
 
     public Coordinates getCoord() {

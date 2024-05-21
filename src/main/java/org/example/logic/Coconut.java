@@ -7,8 +7,4 @@ public class Coconut extends Entity {
 
     }
 
-    public void destroy() {
-        this.getCoord().setX(1000);
-    }
-
 }

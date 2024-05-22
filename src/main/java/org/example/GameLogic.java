@@ -3,9 +3,7 @@ package org.example;
 import org.example.logic.*;
 import org.example.logic.Menu;
 
-
 import javax.swing.*;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -23,19 +21,14 @@ import java.util.Random;
         private Thistle[] thistles;
         private int level;
         private boolean loading;
-
         private Sound menuMusic, gameMusic;
-        private int spiderTimer;
-        private boolean checkSpiderTimer;
-
 
         public void initialize() {
-
             this.random = new Random();
-            this.player = new Player(400, 540, 90, 90, "mikyr.png");
+            this.player = new Player(400, 540, 90, 90, "mikyr.png", "mikyr-rudej.png", "mikyr-hvezdy.png","mikyr-srdce.png");
             this.monkey = new Monkey(random.nextInt(50, 850), 90, 90, 90, "opica.png");
             this.monkey2 = new Monkey(0, 90, 70, 70, "opica.png");
-            this.spider = new Spider(900, 610, 70, 50, "pavouk.png");
+            this.spider = new Spider(1100, 610, 70, 50, "pavoukRight.png", "pavouk.png");
             this.score = 0;
             this.level = 1;
             this.menu = new Menu("menu.png");
@@ -63,23 +56,12 @@ import java.util.Random;
                 }
             });
             this.timer.start();
-
             this.menuMusic = new Sound("intro.wav");
             this.gameMusic = new Sound("awimawe.wav");
-
-            this.spiderTimer = 0;
-            this.checkSpiderTimer = false;
-
-        }
-
-        public GameLogic() {
-
         }
 
 
         public void update() {
-
-            //TAHLE PODMÍNKA SLOUŽÍ HLAVNĚ PRO GRAFIKU
             if (menuMusic.getClip().isRunning()){
                 loading = false;
             }
@@ -87,52 +69,43 @@ import java.util.Random;
             //Zapínání a vypínání muziky
             if (menu.getPage() == 1){
                 menuMusic.start();
-
                 if (!menu.isMenuMute()){
                     menuMusic.start();
                 }else {
                     menuMusic.stop();
                 }
-
             }
 
             if(menu.getPage() == 2 ) {
                 menuMusic.stop();
-
                 if (!menu.isGameMute()) {
                     gameMusic.start();
                 }else {
                     gameMusic.stop();
                 }
 
-                //pohyb opice
                 monkey.sideMove(16);
-
                 player.move(10);
-
+                player.damageTimer();
                 score = monkey.getCoconutDodge();
-
-                //zde volám metodu updateCoconut z tridy monkey
                 monkey.updateCoconuts();
-
 
                 //kolize s kokosem co hází 1. opice
                 for (Coconut coconut: monkey.getCoconuts()) {
                     if (player.checkCollision(coconut.getRectangle())) {
                         player.damage();
-
+                        player.activeDamageImage();
                         //jakmile mě zasáhne kokos posunu ho na x mimo mapu, aby vypadalo, že mě zasáhl, jakmile pak dosáhne dane y souradnice bude vymazan z iteratoru
-                        coconut.destroy(1000);
-
+                        coconut.destroyCoconut();
                     }
                 }
-
 
                 //kolize s kokosem co hází 2. opice
                 for (Coconut coconut: monkey2.getCoconuts()){
                     if (player.checkCollision(coconut.getRectangle())){
                         player.damage();
-                        coconut.destroy(1000);
+                        player.activeDamageImage();
+                        coconut.destroyCoconut();
                     }
                 }
 
@@ -150,34 +123,27 @@ import java.util.Random;
                 //kolize s pavoukem a omezení pohybu
                 if (player.checkCollision(spider.getRectangle())) {
                     player.slowDown();
-                    checkSpiderTimer = true;
+                    spider.spiderTimerActive();
                 }
-                if (checkSpiderTimer){
-                    spiderTimer++;
-                }
-                if (spiderTimer >= 80){
-                    checkSpiderTimer = false;
+
+                spider.stunTimer();
+
+                if (spider.getSpiderTimer() == 0) {
                     player.moveNormal();
-                    spiderTimer = 0;
-
                 }
-
-
 
                 //kolize mezi hráčem a bublinou se srdíčkem
                 if (player.checkCollision(bubbleHealth.getRectangle())){
                     player.addHealth();
-
-                    //posunout bublinu na jiné x, aby při srazce s bublinou vypadalo, že praskla
-                    bubbleHealth.destroy(1000);
-
+                    player.healTimerActive();
+                    bubbleHealth.destroyBubble();
                 }
+                player.healTimer();
 
                 //jakmile bublina dosáhne y vetsi nebo rovno 3000 vrací se zpet na horu, aby mohla padat
                 if (bubbleHealth.getCoord().y >= 3000){
                     bubbleHealth.resetPosition(random.nextInt(50, 850), -150);
                 }
-
 
                 // thistle/bodlak kolize
                 if (score >= 30) {
@@ -203,20 +169,17 @@ import java.util.Random;
                         if (thistle.getCoord().y <= 590){
                             if (player.checkCollision(thistle.getRectangle())){
                                 player.damage();
+                                player.activeDamageImage();
                             }
                         }
                     }
-
-
-
                 }
+
                 if (score >= 40){
                     level = 4;
                     monkey2.sideMove(4);
                     monkey2.updateCoconuts();
                 }
-
-
             }
 
             //prepnuti hry
@@ -234,30 +197,25 @@ import java.util.Random;
         }
 
         public void resetGame(){
-                player.resetXPosition(400);
-
+                player.resetPosition(400, 540);
                 player.resetHealth();
-
-                monkey.resetXPosition(random.nextInt(50, 850));
-
-                monkey2.resetXPosition(30);
-
-                bubbleHealth.resetXPosition(1000);
-
-                spider.resetPosition(900, 610);
-                spiderTimer = 0;
+                monkey.resetPosition(random.nextInt(50, 850), 90);
+                monkey2.resetPosition(0, 90);
+                bubbleHealth.resetPosition(random.nextInt(50, 850), -150);
+                spider.resetPosition(1100, 610);
+                spider.resetSpiderTimer();
+                player.resetDamageTimer();
+                player.deactiveDamageImage();
+                spider.spiderTimerDeactive();
                 player.moveNormal();
-
                 thistles[0].resetPosition(random.nextInt(50, 850), 700);
                 thistles[1].resetPosition(random.nextInt(50, 850), 700);
                 thistles[2].resetPosition(random.nextInt(50, 850), 700);
                 thistles[3].resetPosition(random.nextInt(50, 850), 700);
-
                 monkey.resetCoconutDodge();
-
                 level = 1;
-
         }
+
         public void showHighScore(){
             if(score > highScore){
                 highScore = score;
@@ -330,6 +288,9 @@ import java.util.Random;
         public boolean isLoading() {
             return loading;
         }
+
+
+
     }
 
 

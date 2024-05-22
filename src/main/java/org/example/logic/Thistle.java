@@ -22,6 +22,11 @@ public class Thistle extends Entity{
         getCoord().setX(random.nextInt(50, 850));
     }
 
+
+
+
+
+
     public boolean isCollided() {
         return isCollided;
     }

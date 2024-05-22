@@ -17,11 +17,9 @@ public class Menu implements KeyListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         this.page = 1;
         this.menuMute = false;
         this.gameMute = false;
-
     }
 
     public void switchPage(int pageNumber ){
@@ -30,7 +28,6 @@ public class Menu implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
@@ -38,41 +35,33 @@ public class Menu implements KeyListener {
         if (page == 1) {
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 page = 2;
-
             }
             if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
                 System.exit(0);
             }
-
             if (e.getKeyCode() == KeyEvent.VK_P) {
                 page = 3;
             }
             if (e.getKeyCode() == KeyEvent.VK_M){
                 menuMute = true;
             }
-
             if (e.getKeyCode() == KeyEvent.VK_U) {
                 menuMute = false;
             }
-
         }
         if (page == 2){
             if (e.getKeyCode() == KeyEvent.VK_M){
                 gameMute = true;
             }
-
             if (e.getKeyCode() == KeyEvent.VK_U) {
                 gameMute = false;
             }
         }
-
         if (page == 3 || page == 4) {
             if (e.getKeyCode() == KeyEvent.VK_R) {
                 page = 1;
             }
         }
-
-
         if( page == 4){
             if (e.getKeyCode() == KeyEvent.VK_ENTER){
                 page = 2;
@@ -83,7 +72,6 @@ public class Menu implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 
 

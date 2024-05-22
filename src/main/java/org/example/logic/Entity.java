@@ -25,8 +25,6 @@ public class Entity {
         this.random = new Random();
     }
 
-
-
     public void fallDown(int speed){
         coord.y += speed;
     }
@@ -73,7 +71,6 @@ public class Entity {
         return new Rectangle(coord.x, coord.y, size.width, size.height);
     }
 
-
     public boolean checkCollision(Rectangle object){
         return getRectangle().intersects(object);
     }
@@ -82,13 +79,7 @@ public class Entity {
         setCoord(new Coordinates(x, y));
     }
 
-    public void destroy(int x){
-        getCoord().setX(x);
-    }
 
-    public void resetXPosition(int x){
-        getCoord().setX(x);
-    }
 
 
     public Coordinates getCoord() {
@@ -107,5 +98,7 @@ public class Entity {
         this.coord = coord;
     }
 
-
+    public boolean isMove() {
+        return move;
+    }
 }

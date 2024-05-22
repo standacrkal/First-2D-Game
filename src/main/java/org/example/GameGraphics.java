@@ -28,69 +28,57 @@ public class GameGraphics extends JFrame{
         this.draw = new Draw();
         this.logic = logic;
         add(draw);
-
         //loading
         try {
             this.loadingScreeen = ImageIO.read(getClass().getResource("/loadingScreen.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // pozadi lvl1
         try {
             this.bg = ImageIO.read(getClass().getResource("/bg.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // pozadi lvl2
         try {
             this.bg2 = ImageIO.read(getClass().getResource("/bg2.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // pozadi lvl3
         this.bgGif = new ImageIcon(getClass().getResource("/bg3.gif"));
         this.bg3 = bgGif.getImage();
-
         this.bg2Gif = new ImageIcon(getClass().getResource("/bg4.gif"));
         this.bg4 = bg2Gif.getImage();
-
         // deadscreen
         try {
             this.deadScreen = ImageIO.read(getClass().getResource("/gameover.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // pravidla
         try {
             this.rules = ImageIO.read(getClass().getResource("/rules.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // zvuk
         try {
             this.sound = ImageIO.read(getClass().getResource("/sound.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // ztlumeny zvuk
         try {
             this.soundMute = ImageIO.read(getClass().getResource("/soundMute.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         addKeyListener(logic.getPlayer());
         addKeyListener(logic.getMenu());
-
         gameIcon = new ImageIcon(getClass().getResource("/icon.png"));
         setIconImage(gameIcon.getImage());
-
         setVisible(true);
     }
 
@@ -104,21 +92,17 @@ public class GameGraphics extends JFrame{
         @Override
         protected  void paintComponent(Graphics g){
             super.paintComponent(g);
-
             //dokud se nenacte pisen bude tam loading az se nacte tak tam bude menu
             if (logic.getMenu().getPage() == 1 && logic.isLoading()){
                 g.drawImage(loadingScreeen, 0, 0, 900, 720, this);
             }
-
             //MENU
             if (logic.getMenu().getPage() == 1 && !logic.isLoading()) {
-
                 g.drawImage(logic.getMenu().getImgMenu(), 0, 0, 900, 720, this);
                 this.font = new Font("River Adventurer", Font.ITALIC, 30);
                 g.setFont(font);
                 g.setColor(Color.WHITE);
                 g.drawString("HIGH SCORE: " + Integer.toString(logic.getHighScore()), 345, 585);
-
 
                 //ZVUK OBRAZEK MENU
                 if (logic.getMenu().isMenuMute()){
@@ -128,13 +112,10 @@ public class GameGraphics extends JFrame{
                 }
             }
 
-
-
             //PRAVIDLA
             if (logic.getMenu().getPage() == 3){
                 g.drawImage(rules, 0, 0, 900, 700, this);
             }
-
 
             //DEADSCREEN
             if (logic.getMenu().getPage() == 4){
@@ -150,18 +131,15 @@ public class GameGraphics extends JFrame{
                 this.font = new Font("River Adventurer", Font.ITALIC, 30);
                 g.setFont(font);
 
-
                 //POZADI PRO 1 LEVEL
                 if (logic.getLevel() == 1) {
                     g.drawImage(bg, 0, 0, 900, 720, this);
                 }
 
-
                 // POZADI PRO 2 LEVEL
                 if (logic.getLevel() == 2){
                     g.drawImage(bg2, 0, 0, this);
                 }
-
 
                 //POZADI PRO 3 LEVEL
                 if (logic.getLevel() == 3){
@@ -175,7 +153,22 @@ public class GameGraphics extends JFrame{
                 }
 
                 //ENTITY
-                g.drawImage(logic.getPlayer().getImage(), logic.getPlayer().getCoord().x, logic.getPlayer().getCoord().y, logic.getPlayer().getSize().width, logic.getPlayer().getSize().height, this);
+                if (!logic.getPlayer().isDamage() || !logic.getSpider().isCheckSpiderTimer() || !logic.getPlayer().isHeal()) {
+                    g.drawImage(logic.getPlayer().getImage(), logic.getPlayer().getCoord().x, logic.getPlayer().getCoord().y, logic.getPlayer().getSize().width, logic.getPlayer().getSize().height, this);
+                }
+
+                if (logic.getSpider().isCheckSpiderTimer()){
+                    g.drawImage(logic.getPlayer().getStarImg(), logic.getPlayer().getCoord().x, logic.getPlayer().getCoord().y, logic.getPlayer().getSize().width, logic.getPlayer().getSize().height, this);
+                }
+
+                if (logic.getPlayer().isDamage()){
+                    g.drawImage(logic.getPlayer().getDmgImg(), logic.getPlayer().getCoord().x, logic.getPlayer().getCoord().y, logic.getPlayer().getSize().width, logic.getPlayer().getSize().height, this);
+                }
+
+                if (logic.getPlayer().isHeal()){
+                    g.drawImage(logic.getPlayer().getHealImg(), logic.getPlayer().getCoord().x, logic.getPlayer().getCoord().y, logic.getPlayer().getSize().width, logic.getPlayer().getSize().height, this);
+                }
+
                 g.drawImage(logic.getMonkey().getImage(), logic.getMonkey().getCoord().x, logic.getMonkey().getCoord().y, logic.getMonkey().getSize().width, logic.getMonkey().getSize().height, this);
                 g.drawImage(logic.getBubbleHealth().getImage(), logic.getBubbleHealth().getCoord().x, logic.getBubbleHealth().getCoord().y, logic.getBubbleHealth().getSize().width, logic.getBubbleHealth().getSize().height, this);
 
@@ -193,22 +186,23 @@ public class GameGraphics extends JFrame{
                     g.drawImage(thistle.getImage(), thistle.getCoord().x, thistle.getCoord().y, thistle.getSize().width, thistle.getSize().height, this);
                 }
 
-
                 for (Health health: logic.getPlayer().getHealth()){
                     if (health != null) {
                         g.drawImage(health.getImage(), health.getCoord().x, health.getCoord().y, health.getSize().width, health.getSize().height, this);
                     }
                 }
                 if (logic.getScore() >= 15){
-                    g.drawImage(logic.getSpider().getImage(), logic.getSpider().getCoord().x, logic.getSpider().getCoord().y, logic.getSpider().getSize().width, logic.getSpider().getSize().height, this);
+                    if (logic.getSpider().isMove()) {
+                        g.drawImage(logic.getSpider().getImage(), logic.getSpider().getCoord().x, logic.getSpider().getCoord().y, logic.getSpider().getSize().width, logic.getSpider().getSize().height, this);
+                    }else {
+                        g.drawImage(logic.getSpider().getSecondImage(), logic.getSpider().getCoord().x, logic.getSpider().getCoord().y, logic.getSpider().getSize().width, logic.getSpider().getSize().height, this);
+                    }
                 }
-
 
                 //zde musím uvést podmínku, protože při resetu mi to automaticky nastavuje skore na 1 když tam je 0, takže nastavím -1 a když tam není zatím 0 nevykreslí se
                 if (logic.getScore() >= 0) {
                     g.drawString("Score: " + Integer.toString(logic.getScore()), 700, 50);
                 }
-
 
                 //Level
                 g.drawString("Level: " + Integer.toString(logic.getLevel()), 400, 50);
@@ -220,9 +214,6 @@ public class GameGraphics extends JFrame{
                     g.drawImage(sound, 160, 15, 50, 50, this);
                 }
             }
-
-
-
         }
     }
 }

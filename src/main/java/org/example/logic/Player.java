@@ -1,9 +1,10 @@
 package org.example.logic;
 
-
+import javax.imageio.ImageIO;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Player extends Entity implements KeyListener {
     private boolean left;
@@ -11,15 +12,36 @@ public class Player extends Entity implements KeyListener {
     private boolean up;
     private boolean canMove;
     private Health[] health;
+    private BufferedImage damageImg, starImg, healImg;
+    private boolean damage;
+    private  int damageTimer;
+    private boolean heal;
+    private int healTimer;
 
-    public Player(int x, int y, int width, int height, String file) {
+    public Player(int x, int y, int width, int height, String file, String fileRed, String fileStar, String fileHeal) {
         super(x, y, width, height, file);
         this.canMove = true;
         this.health = new Health[3];
+        this.damageTimer = 0;
+        this.damage = false;
         this.health[0] = new Health(30, 20, 40, 40, "srdce.png");
         this.health[1] = new Health(70, 20, 40, 40, "srdce.png");
         this.health[2] = new Health(110, 20, 40, 40, "srdce.png");
-
+        try {
+            this.starImg = ImageIO.read(getClass().getResource("/" + fileStar));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            this.damageImg = ImageIO.read(getClass().getResource("/" + fileRed));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            this.healImg = ImageIO.read(getClass().getResource("/" + fileHeal));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void damage(){
@@ -31,6 +53,31 @@ public class Player extends Entity implements KeyListener {
             getHealth()[0] = null;
         }
     }
+
+    public void damageTimer(){
+        if (damage){
+            damageTimer++;
+        }
+        if (damageTimer >= 20){
+            damage = false;
+            damageTimer = 0;
+        }
+    }
+
+    public void healTimer(){
+        if (heal){
+            healTimer++;
+        }
+        if (healTimer >= 30){
+            heal = false;
+            healTimer = 0;
+        }
+    }
+
+    public void healTimerActive(){
+        this.heal = true;
+    }
+
 
     public void addHealth(){
         if (getHealth()[2] == null && getHealth()[1]!= null){
@@ -44,8 +91,8 @@ public class Player extends Entity implements KeyListener {
         if (canMove) {
             setCanMove(false);
         }
-
     }
+
     public void moveNormal(){
         setCanMove(true);
     }
@@ -60,16 +107,15 @@ public class Player extends Entity implements KeyListener {
        if( getCoord().x <= -5){
            getCoord().x = -5;
        }
-       if(getCoord().x >= 800){
-            getCoord().x = 800;
+       if(getCoord().x >= 820){
+            getCoord().x = 820;
        }
-        if (up && getCoord().y == 540) {
+       if (up && getCoord().y == 540) {
             getCoord().y -= 120;
             up = false;
-        } else if (getCoord().y < 540) {
+       } else if (getCoord().y < 540) {
             getCoord().y += 10;
-        }
-
+       }
     }
 
     public void resetHealth(){
@@ -80,7 +126,6 @@ public class Player extends Entity implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
@@ -94,10 +139,8 @@ public class Player extends Entity implements KeyListener {
             }
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 up = true;
-
             }
         }
-
     }
 
     @Override
@@ -111,7 +154,18 @@ public class Player extends Entity implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_SPACE){
             up = false;
         }
+    }
 
+    public void activeDamageImage() {
+        this.damage = true;
+    }
+
+    public void deactiveDamageImage(){
+        this.damage = false;
+    }
+
+    public void resetDamageTimer() {
+        this.damageTimer = 0;
     }
 
 
@@ -128,6 +182,23 @@ public class Player extends Entity implements KeyListener {
         return health;
     }
 
+    public BufferedImage getDmgImg() {
+        return damageImg;
+    }
 
+    public BufferedImage getStarImg() {
+        return starImg;
+    }
+
+    public boolean isDamage() {
+        return damage;
+    }
+
+    public BufferedImage getHealImg() {
+        return healImg;
+    }
+    public boolean isHeal() {
+        return heal;
+    }
 }
 

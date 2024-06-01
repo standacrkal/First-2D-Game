@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import java.util.Random;
 
-public class Entity {
+public abstract class Entity {
     private Coordinates coord;
     private Size size;
     private BufferedImage image;
@@ -49,14 +49,14 @@ public class Entity {
 
     public void grow(int speed){
         if (grow){
-            if (coord.y > 590){
+            if (coord.y >= 590){
                 coord.y -= speed;
             }else {
                 grow = false;
             }
         }
         else{
-            if (coord.y > 0 && coord.y < 1000){
+            if (coord.y <= 1000){
                 coord.y += speed;
             }else {
                 grow = true;

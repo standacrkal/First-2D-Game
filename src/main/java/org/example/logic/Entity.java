@@ -3,29 +3,32 @@ package org.example.logic;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+
 import java.util.Random;
 
-public class Entity {
+public abstract class Entity {
     private Coordinates coord;
     private Size size;
     private BufferedImage image;
     private boolean move, grow;
     private Random random;
+
     public Entity(int x, int y, int width, int height, String file){
         this.coord = new Coordinates(x, y);
         this.size = new Size(width, height);
         try {
-            this.image = ImageIO.read(new File("src/main/resources/" + file));
+            this.image = ImageIO.read(getClass().getResource("/" + file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         this.random = new Random();
     }
+
     public void fallDown(int speed){
         coord.y += speed;
     }
+
     public void sideMove(int speed){
         if (move){
             if (coord.x <= 900){
@@ -43,16 +46,17 @@ public class Entity {
             }
         }
     }
+
     public void grow(int speed){
         if (grow){
-            if (coord.y > 590){
+            if (coord.y >= 590){
                 coord.y -= speed;
             }else {
                 grow = false;
             }
         }
         else{
-            if (coord.y > 0 && coord.y < 1000){
+            if (coord.y <= 1000){
                 coord.y += speed;
             }else {
                 grow = true;
@@ -61,13 +65,22 @@ public class Entity {
         if (coord.y >= 1000){
             coord.x = random.nextInt(50, 850);
         }
+    }
 
+    public Rectangle getRectangle(){
+        return new Rectangle(coord.x, coord.y, size.width, size.height);
     }
 
     public boolean checkCollision(Rectangle object){
-        Rectangle playerRect = new Rectangle(getCoord().x, getCoord().y, getSize().width, getSize().height);
-        return playerRect.intersects(object);
+        return getRectangle().intersects(object);
     }
+
+    public void resetPosition(int x, int y){
+        setCoord(new Coordinates(x, y));
+    }
+
+
+
 
     public Coordinates getCoord() {
         return coord;
@@ -85,4 +98,7 @@ public class Entity {
         this.coord = coord;
     }
 
+    public boolean isMove() {
+        return move;
+    }
 }

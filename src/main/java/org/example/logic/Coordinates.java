@@ -13,7 +13,4 @@ public class Coordinates {
         this.x = x;
     }
 
-    public void setY(int y) {
-        this.y = y;
-    }
 }

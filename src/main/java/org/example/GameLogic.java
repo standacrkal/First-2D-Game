@@ -4,83 +4,108 @@ import org.example.logic.*;
 import org.example.logic.Menu;
 
 import javax.swing.*;
-    import java.awt.*;
-    import java.awt.event.ActionEvent;
-    import java.awt.event.ActionListener;
-    import java.util.Random;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Random;
 
     public class GameLogic  {
         private Player player;
         private Timer timer;
-        private Monkey monkey;
+        private Monkey monkey, monkey2;
         private Spider spider;
-        private int score;
+        private int score, highScore;
         private Random random;
         private Menu menu;
         private Health bubbleHealth;
-        private FlowerSpike[] flowerSpikes;
+        private Thistle[] thistles;
         private int level;
+        private boolean loading;
+        private Sound menuMusic, gameMusic;
 
         public void initialize() {
-
             this.random = new Random();
-            this.player = new Player(400, 540, 90, 90, "mikyr.png");
+            this.player = new Player(400, 540, 90, 90, "mikyr.png", "mikyr-rudej.png", "mikyr-hvezdy.png","mikyr-srdce.png");
             this.monkey = new Monkey(random.nextInt(50, 850), 90, 90, 90, "opica.png");
-            this.spider = new Spider(900, 610, 90, 60, "pavouk.png");
+            this.monkey2 = new Monkey(0, 90, 70, 70, "opica.png");
+            this.spider = new Spider(1100, 610, 70, 50, "pavoukRight.png", "pavouk.png");
             this.score = 0;
             this.level = 1;
             this.menu = new Menu("menu.png");
             this.bubbleHealth = new Health(random.nextInt(50, 850), - 100, 40, 40, "bubble.png");
-
-            this.flowerSpikes = new FlowerSpike[4];
-            this.flowerSpikes[0] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
-            this.flowerSpikes[1] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
-            this.flowerSpikes[2] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
-            this.flowerSpikes[3] = new FlowerSpike(random.nextInt(50, 850), 750,  40, 40, "kytka.png");
-
-
-                this.timer = new Timer(2000, new ActionListener() { //prvni kokos se spawne zhruba po 2000 sekundach
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (menu.getPage() == 2) {
-                            monkey.throwCoconut();
+            this.highScore = loadHighScoreFile();
+            this.thistles = new Thistle[4];
+            this.thistles[0] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
+            this.thistles[1] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
+            this.thistles[2] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
+            this.thistles[3] = new Thistle(random.nextInt(50, 850), 700,  40, 40, "kytka.png");
+            this.loading = true;
+            this.timer = new Timer(2000, new ActionListener() { //prvni kokos se spawne zhruba po 2000 sekundach
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (menu.getPage() == 2) {
+                        monkey.throwCoconut();
+                        if (level == 4) {
+                            monkey2.throwCoconut();
                         }
-                        timer.setDelay(random.nextInt(500, 1400)); //dalsi nahodne
+
+
+
                     }
-                });
-                this.timer.start();
-
-
+                    timer.setDelay(random.nextInt(700, 1400)); //dalsi nahodne
+                }
+            });
+            this.timer.start();
+            this.menuMusic = new Sound("intro.wav");
+            this.gameMusic = new Sound("awimawe.wav");
         }
 
-        public GameLogic() {
-
-        }
 
         public void update() {
+            if (menuMusic.getClip().isRunning()){
+                loading = false;
+            }
 
+            //Zapínání a vypínání muziky
+            if (menu.getPage() == 1){
+                menuMusic.start();
+                if (!menu.isMenuMute()){
+                    menuMusic.start();
+                }else {
+                    menuMusic.stop();
+                }
+            }
 
             if(menu.getPage() == 2 ) {
-                //pohyb opice
+                menuMusic.stop();
+                if (!menu.isGameMute()) {
+                    gameMusic.start();
+                }else {
+                    gameMusic.stop();
+                }
+
                 monkey.sideMove(16);
-                //zde volám metodu updateCoconut z tridy monkey
-
                 player.move(10);
-
-                score = monkey.getScore();
-
+                player.damageTimer();
+                score = monkey.getCoconutDodge();
                 monkey.updateCoconuts();
 
-                //kolize s kokosem a ubírání životů
+                //kolize s kokosem co hází 1. opice
                 for (Coconut coconut: monkey.getCoconuts()) {
-                    if (player.checkCollision(new Rectangle(coconut.getCoord().x, coconut.getCoord().y, coconut.getSize().width, coconut.getSize().height))) {
-                        if (coconut.getCoord().y <= 530) {
-                            player.damage();
+                    if (player.checkCollision(coconut.getRectangle())) {
+                        player.damage();
+                        player.activeDamageImage();
+                        //jakmile mě zasáhne kokos posunu ho na x mimo mapu, aby vypadalo, že mě zasáhl, jakmile pak dosáhne dane y souradnice bude vymazan z iteratoru
+                        coconut.destroyCoconut();
+                    }
+                }
 
-                            //jakmile mě zasáhne kokos posunu ho na x mimo mapu, aby vypadalo, že mě zasáhl, jakmile pak dosáhne dane y souradnice bude vymazan z iteratoru
-                            coconut.destroy();
-                        }
-
+                //kolize s kokosem co hází 2. opice
+                for (Coconut coconut: monkey2.getCoconuts()){
+                    if (player.checkCollision(coconut.getRectangle())){
+                        player.damage();
+                        player.activeDamageImage();
+                        coconut.destroyCoconut();
                     }
                 }
 
@@ -96,98 +121,128 @@ import javax.swing.*;
                 }
 
                 //kolize s pavoukem a omezení pohybu
-                if (player.checkCollision(new Rectangle(spider.getCoord().x, spider.getCoord().y, spider.getSize().width, spider.getSize().height))) {
+                if (player.checkCollision(spider.getRectangle())) {
                     player.slowDown();
-                } else {
+                    spider.spiderTimerActive();
+                }
+
+                spider.stunTimer();
+
+                if (spider.getSpiderTimer() == 0) {
                     player.moveNormal();
                 }
 
-
                 //kolize mezi hráčem a bublinou se srdíčkem
-                if (player.checkCollision(new Rectangle(bubbleHealth.getCoord().x, bubbleHealth.getCoord().y, bubbleHealth.getSize().width, bubbleHealth.getSize().height))){
+                if (player.checkCollision(bubbleHealth.getRectangle())){
                     player.addHealth();
-
-                    //posunout bublinu na jiné x, aby při srazce s bublinou vypadalo, že praskla
-                    bubbleHealth.destroy();
-
+                    player.healTimerActive();
+                    bubbleHealth.destroyBubble();
                 }
+                player.healTimer();
 
                 //jakmile bublina dosáhne y vetsi nebo rovno 3000 vrací se zpet na horu, aby mohla padat
                 if (bubbleHealth.getCoord().y >= 3000){
-                    bubbleHealth.setCoord(new Coordinates(random.nextInt(50, 850), -150));
+                    bubbleHealth.resetPosition(random.nextInt(50, 850), -150);
                 }
 
-
-                //flowerSpike kolize
+                // thistle/bodlak kolize
                 if (score >= 30) {
                     level = 3;
-                    for (FlowerSpike flowerSpike : flowerSpikes) {
-                        flowerSpike.grow(2);
-                        flowerSpike.setCollided(false);
+                    for (Thistle thistle : thistles) {
+                        thistle.grow(2);
+                        thistle.setCollided(false);
 
-                        //kontroluje zda se  2 flowerspiky spawnou na sobe, jestli ano zapne se isCollided
-                        for (FlowerSpike flowerSpike1: flowerSpikes){
-                            if (flowerSpike != flowerSpike1 && flowerSpike.checkCollisionBetweenFlowers(new Rectangle(flowerSpike1.getCoord().x, flowerSpike1.getCoord().y, flowerSpike1.getSize().width, flowerSpike1.getSize().height))) {
-                                flowerSpike.setCollided(true);
+                        //kontroluje zda se  2 bodlaky spawnou na sobe, jestli ano zapne se isCollided
+                        for (Thistle thistle1 : thistles){
+                            if (thistle != thistle1 && thistle.checkThistleCollision(thistle1.getRectangle())) {
+                                thistle.setCollided(true);
                                 break;
                             }
                         }
 
-                        //jestli je isCollided true změní se X souřadnice jednoho z flowerspiků
-                        if (flowerSpike.isCollided()) {
-                            flowerSpike.getCoord().setX(random.nextInt(50, 850));
+                        //jestli je isCollided true změní se X souřadnice jednoho z bodlaku
+                        if (thistle.isCollided()) {
+                            thistle.changePosition();
                         }
 
-                        //když se flowerspike dotkne nohou hráče ubere mu hp
-                        if (flowerSpike.getCoord().y <= 590){
-                            if (player.checkCollision(new Rectangle(flowerSpike.getCoord().x, flowerSpike.getCoord().y, flowerSpike.getSize().width, flowerSpike.getSize().height))){
+                        //když se bodlak dotkne nohou hráče ubere mu hp
+                        if (thistle.getCoord().y <= 590){
+                            if (player.checkCollision(thistle.getRectangle())){
                                 player.damage();
+                                player.activeDamageImage();
                             }
                         }
                     }
                 }
 
-
-
+                if (score >= 40){
+                    level = 4;
+                    monkey2.sideMove(4);
+                    monkey2.updateCoconuts();
+                }
             }
 
             //prepnuti hry
             if (player.getHealth()[0] == null && player.getHealth()[1] == null && player.getHealth()[2] == null) {
-                menu.setPage(4);
+                menu.switchPage(4);
             }
+
             //resetovani
             if (menu.getPage() == 4){
                 resetGame();
+                showHighScore();
+                gameMusic.stop();
             }
-
 
         }
 
         public void resetGame(){
-                player.getCoord().setX(400);
-
-                player.getHealth()[0] = new Health(30, 20, 40, 40, "srdce.png");
-                player.getHealth()[1] = new Health(70, 20, 40, 40, "srdce.png");
-                player.getHealth()[2] = new Health(110, 20, 40, 40, "srdce.png");
-
-                monkey.getCoord().setX(random.nextInt(50, 850));
-
-
-                bubbleHealth.setCoord(new Coordinates(random.nextInt(50, 850), - 100));
-
-                spider.setCoord(new Coordinates(900, 610));
-
-                flowerSpikes[0].setCoord(new Coordinates(random.nextInt(50, 850), 750));
-                flowerSpikes[1].setCoord(new Coordinates(random.nextInt(50, 850), 750));
-                flowerSpikes[2].setCoord(new Coordinates(random.nextInt(50, 850), 750));
-                flowerSpikes[3].setCoord(new Coordinates(random.nextInt(50, 850), 750));
-
-                //zde musím nastavit score na -1, protože z nějakého důvodu když zapnu hru tak se mi tam ukáže score 1 když tam mám nastavenou 0 a pak to neodpovida danému počtu vyhnutých kokosů
-                monkey.setScore(-1);
-
+                player.resetPosition(400, 540);
+                player.resetHealth();
+                monkey.resetPosition(random.nextInt(50, 850), 90);
+                monkey2.resetPosition(0, 90);
+                bubbleHealth.resetPosition(random.nextInt(50, 850), -150);
+                spider.resetPosition(1100, 610);
+                spider.resetSpiderTimer();
+                player.resetDamageTimer();
+                player.deactiveDamageImage();
+                spider.spiderTimerDeactive();
+                player.moveNormal();
+                thistles[0].resetPosition(random.nextInt(50, 850), 700);
+                thistles[1].resetPosition(random.nextInt(50, 850), 700);
+                thistles[2].resetPosition(random.nextInt(50, 850), 700);
+                thistles[3].resetPosition(random.nextInt(50, 850), 700);
+                monkey.resetCoconutDodge();
                 level = 1;
-
         }
+
+        public void showHighScore(){
+            if(score > highScore){
+                highScore = score;
+                saveHighScoreToFile(highScore);
+            }
+        }
+
+
+        public int loadHighScoreFile(){
+            try (BufferedReader reader = new BufferedReader(new FileReader("highScore.txt"))) {
+                return Integer.parseInt(reader.readLine());
+            } catch (IOException | NumberFormatException e) {
+                return 0;
+            }
+        }
+
+
+        private void saveHighScoreToFile(int score){
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("highScore.txt"))) {
+                writer.write(String.valueOf(score));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
 
         public Menu getMenu() {
             return menu;
@@ -213,13 +268,29 @@ import javax.swing.*;
             return bubbleHealth;
         }
 
-        public FlowerSpike[] getFlowerSpikes() {
-            return flowerSpikes;
+        public Thistle[] getThistles() {
+            return thistles;
         }
 
         public int getLevel() {
             return level;
         }
+
+        public int getHighScore() {
+            return highScore;
+        }
+
+
+        public Monkey getMonkey2() {
+            return monkey2;
+        }
+
+        public boolean isLoading() {
+            return loading;
+        }
+
+
+
     }
 
 
